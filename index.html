@@ -1,0 +1,488 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Check-in Peserta</title>
+
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #reader {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    #hasil {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 18px;
+    }
+
+    #camera {
+      display: none;
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      background: black;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #ambilFoto {
+      display: none;
+      background: #111;
+      color: white;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📸 Check-in Peserta</h1>
+
+  <div id="hasil">
+    Silakan scan QR peserta.
+  </div>
+
+  <!-- QR SCANNER -->
+  <div id="reader"></div>
+
+  <!-- KAMERA -->
+  <div id="camera">
+
+    <video
+      id="video"
+      autoplay
+      playsinline>
+    </video>
+
+    <canvas
+      id="canvas"
+      style="display:none;">
+    </canvas>
+
+    <button
+      id="ambilFoto"
+      onclick="ambilFoto()">
+      📷 Ambil Foto
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  // ==================================================
+  // URL GOOGLE APPS SCRIPT
+  // ==================================================
+
+  const APPS_SCRIPT_URL =
+    "GANTI_DENGAN_URL_APPS_SCRIPT";
+
+
+  // ==================================================
+  // VARIABLE
+  // ==================================================
+
+  let idPeserta = null;
+  let namaPeserta = null;
+  let scanner = null;
+  let stream = null;
+  let sudahScan = false;
+
+
+  // ==================================================
+  // QR BERHASIL DIBACA
+  // ==================================================
+
+  async function berhasilScan(decodedText) {
+
+    if (sudahScan) return;
+
+    sudahScan = true;
+
+    idPeserta = decodedText.trim();
+
+    // Hentikan scanner
+    if (scanner) {
+
+      try {
+        await scanner.stop();
+        await scanner.clear();
+      } catch (error) {
+        console.log(error);
+      }
+
+    }
+
+    document.getElementById("reader").style.display = "none";
+
+    document.getElementById("hasil").innerHTML =
+      "⏳ Mencari data peserta...";
+
+
+    // Cari peserta di Apps Script
+    try {
+
+      const response = await fetch(
+        APPS_SCRIPT_URL +
+        "?action=cariPeserta&id=" +
+        encodeURIComponent(idPeserta)
+      );
+
+      const result = await response.json();
+
+
+      if (!result.success) {
+
+        document.getElementById("hasil").innerHTML =
+          "<span class='error'>" +
+          "❌ ID peserta tidak ditemukan." +
+          "</span>";
+
+        return;
+      }
+
+
+      namaPeserta = result.nama;
+
+
+      document.getElementById("hasil").innerHTML =
+        "Peserta ditemukan:<br><br>" +
+        "<b>" + namaPeserta + "</b><br><br>" +
+        "Silakan ambil foto.";
+
+
+      bukaKamera();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      document.getElementById("hasil").innerHTML =
+        "<span class='error'>" +
+        "❌ Gagal terhubung ke server." +
+        "</span>";
+
+    }
+
+  }
+
+
+  // ==================================================
+  // BUKA KAMERA
+  // ==================================================
+
+  async function bukaKamera() {
+
+    const camera =
+      document.getElementById("camera");
+
+    const video =
+      document.getElementById("video");
+
+    const tombol =
+      document.getElementById("ambilFoto");
+
+
+    camera.style.display = "block";
+
+    tombol.style.display = "block";
+
+
+    try {
+
+      stream =
+        await navigator.mediaDevices.getUserMedia({
+
+          video: {
+            facingMode: "user",
+            width: {
+              ideal: 1280
+            },
+            height: {
+              ideal: 720
+            }
+          },
+
+          audio: false
+
+        });
+
+
+      video.srcObject = stream;
+
+      await video.play();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      document.getElementById("hasil").innerHTML =
+        "<span class='error'>" +
+        "❌ Kamera tidak dapat dibuka.<br><br>" +
+        error.name +
+        "</span>";
+
+    }
+
+  }
+
+
+  // ==================================================
+  // AMBIL FOTO
+  // ==================================================
+
+  async function ambilFoto() {
+
+    const video =
+      document.getElementById("video");
+
+    const canvas =
+      document.getElementById("canvas");
+
+
+    if (!video.videoWidth) {
+
+      alert("Kamera belum siap.");
+
+      return;
+    }
+
+
+    canvas.width =
+      video.videoWidth;
+
+    canvas.height =
+      video.videoHeight;
+
+
+    const context =
+      canvas.getContext("2d");
+
+
+    context.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    const fotoBase64 =
+      canvas.toDataURL(
+        "image/jpeg",
+        0.8
+      );
+
+
+    // Matikan kamera
+    if (stream) {
+
+      stream
+        .getTracks()
+        .forEach(track => track.stop());
+
+      stream = null;
+
+    }
+
+
+    document.getElementById(
+      "ambilFoto"
+    ).style.display = "none";
+
+
+    document.getElementById(
+      "hasil"
+    ).innerHTML =
+      "⏳ Menyimpan foto...";
+
+
+    // Kirim foto ke Apps Script
+    try {
+
+      const response =
+        await fetch(
+          APPS_SCRIPT_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/x-www-form-urlencoded"
+            },
+
+            body:
+              "action=simpanFotoDatang" +
+              "&id=" +
+              encodeURIComponent(idPeserta) +
+              "&foto=" +
+              encodeURIComponent(fotoBase64)
+          }
+        );
+
+
+      const result =
+        await response.json();
+
+
+      if (!result.success) {
+
+        throw new Error(
+          result.message ||
+          "Gagal menyimpan foto."
+        );
+
+      }
+
+
+      document.getElementById(
+        "hasil"
+      ).innerHTML =
+
+        "<span class='success'>" +
+        "✅ CHECK-IN BERHASIL!" +
+        "</span><br><br>" +
+
+        "Nama: <b>" +
+        result.nama +
+        "</b><br><br>" +
+
+        "Foto berhasil disimpan.";
+
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      document.getElementById(
+        "hasil"
+      ).innerHTML =
+
+        "<span class='error'>" +
+        "❌ Gagal menyimpan foto.<br><br>" +
+        error.message +
+        "</span>";
+
+    }
+
+  }
+
+
+  // ==================================================
+  // MULAI QR SCANNER
+  // ==================================================
+
+  function mulaiScanner() {
+
+    scanner =
+      new Html5Qrcode("reader");
+
+
+    scanner.start(
+
+      {
+        facingMode: "environment"
+      },
+
+      {
+        fps: 10,
+
+        qrbox: {
+          width: 250,
+          height: 250
+        }
+
+      },
+
+      berhasilScan,
+
+      function(errorMessage) {
+        // Abaikan error scanner
+      }
+
+    )
+
+    .catch(function(error) {
+
+      document.getElementById("hasil").innerHTML =
+        "<span class='error'>" +
+        "❌ Kamera QR tidak dapat dibuka.<br><br>" +
+        error +
+        "</span>";
+
+    });
+
+  }
+
+
+  // ==================================================
+  // START
+  // ==================================================
+
+  mulaiScanner();
+
+</script>
+
+</body>
+</html>
+```
