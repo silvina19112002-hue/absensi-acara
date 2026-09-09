@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -71,6 +70,12 @@
       color: white;
     }
 
+    #scanLagi {
+      display: none;
+      background: #ddd;
+      color: #111;
+    }
+
     .success {
       color: green;
       font-weight: bold;
@@ -96,7 +101,7 @@
   <!-- QR SCANNER -->
   <div id="reader"></div>
 
-  <!-- KAMERA -->
+  <!-- KAMERA FOTO -->
   <div id="camera">
 
     <video
@@ -117,6 +122,13 @@
     </button>
 
   </div>
+
+  <!-- SCAN LAGI -->
+  <button
+    id="scanLagi"
+    onclick="resetScanner()">
+    🔄 Scan Peserta Berikutnya
+  </button>
 
 </div>
 
@@ -154,34 +166,45 @@
 
     idPeserta = decodedText.trim();
 
+
     // Hentikan scanner
     if (scanner) {
 
       try {
         await scanner.stop();
         await scanner.clear();
-      } catch (error) {
+      }
+
+      catch (error) {
         console.log(error);
       }
 
     }
 
+
     document.getElementById("reader").style.display = "none";
+
 
     document.getElementById("hasil").innerHTML =
       "⏳ Mencari data peserta...";
 
 
-    // Cari peserta di Apps Script
+    // ==================================================
+    // CARI PESERTA
+    // ==================================================
+
     try {
 
-      const response = await fetch(
-        APPS_SCRIPT_URL +
-        "?action=cariPeserta&id=" +
-        encodeURIComponent(idPeserta)
-      );
+      const response =
+        await fetch(
+          APPS_SCRIPT_URL +
+          "?action=cariPeserta&id=" +
+          encodeURIComponent(idPeserta)
+        );
 
-      const result = await response.json();
+
+      const result =
+        await response.json();
 
 
       if (!result.success) {
@@ -191,6 +214,9 @@
           "❌ ID peserta tidak ditemukan." +
           "</span>";
 
+        document.getElementById("scanLagi").style.display =
+          "block";
+
         return;
       }
 
@@ -199,23 +225,36 @@
 
 
       document.getElementById("hasil").innerHTML =
+
         "Peserta ditemukan:<br><br>" +
-        "<b>" + namaPeserta + "</b><br><br>" +
+
+        "<b>" +
+        namaPeserta +
+        "</b><br><br>" +
+
         "Silakan ambil foto.";
 
 
+      // BUKA KAMERA BELAKANG
       bukaKamera();
 
     }
+
 
     catch (error) {
 
       console.error(error);
 
+
       document.getElementById("hasil").innerHTML =
+
         "<span class='error'>" +
         "❌ Gagal terhubung ke server." +
         "</span>";
+
+
+      document.getElementById("scanLagi").style.display =
+        "block";
 
     }
 
@@ -223,7 +262,7 @@
 
 
   // ==================================================
-  // BUKA KAMERA
+  // BUKA KAMERA BELAKANG
   // ==================================================
 
   async function bukaKamera() {
@@ -249,13 +288,19 @@
         await navigator.mediaDevices.getUserMedia({
 
           video: {
-            facingMode: "user",
+
+            facingMode: {
+              ideal: "environment"
+            },
+
             width: {
               ideal: 1280
             },
+
             height: {
               ideal: 720
             }
+
           },
 
           audio: false
@@ -269,15 +314,24 @@
 
     }
 
+
     catch (error) {
 
       console.error(error);
 
+
       document.getElementById("hasil").innerHTML =
+
         "<span class='error'>" +
-        "❌ Kamera tidak dapat dibuka.<br><br>" +
+        "❌ Kamera belakang tidak dapat dibuka.<br><br>" +
         error.name +
         "</span>";
+
+
+      tombol.style.display = "none";
+
+      document.getElementById("scanLagi").style.display =
+        "block";
 
     }
 
@@ -355,27 +409,40 @@
       "⏳ Menyimpan foto...";
 
 
-    // Kirim foto ke Apps Script
+    // ==================================================
+    // SIMPAN FOTO KE APPS SCRIPT
+    // ==================================================
+
     try {
 
       const response =
         await fetch(
+
           APPS_SCRIPT_URL,
+
           {
+
             method: "POST",
 
             headers: {
+
               "Content-Type":
                 "application/x-www-form-urlencoded"
+
             },
 
             body:
+
               "action=simpanFotoDatang" +
+
               "&id=" +
               encodeURIComponent(idPeserta) +
+
               "&foto=" +
               encodeURIComponent(fotoBase64)
+
           }
+
         );
 
 
@@ -408,22 +475,70 @@
         "Foto berhasil disimpan.";
 
 
+      document.getElementById(
+        "scanLagi"
+      ).style.display = "block";
+
+
     }
+
 
     catch (error) {
 
       console.error(error);
+
 
       document.getElementById(
         "hasil"
       ).innerHTML =
 
         "<span class='error'>" +
+
         "❌ Gagal menyimpan foto.<br><br>" +
+
         error.message +
+
         "</span>";
 
+
+      document.getElementById(
+        "scanLagi"
+      ).style.display = "block";
+
     }
+
+  }
+
+
+  // ==================================================
+  // RESET UNTUK PESERTA BERIKUTNYA
+  // ==================================================
+
+  function resetScanner() {
+
+    idPeserta = null;
+    namaPeserta = null;
+    sudahScan = false;
+
+
+    document.getElementById("camera").style.display =
+      "none";
+
+    document.getElementById("ambilFoto").style.display =
+      "none";
+
+    document.getElementById("scanLagi").style.display =
+      "none";
+
+    document.getElementById("reader").style.display =
+      "block";
+
+
+    document.getElementById("hasil").innerHTML =
+      "Silakan scan QR peserta.";
+
+
+    mulaiScanner();
 
   }
 
@@ -445,6 +560,7 @@
       },
 
       {
+
         fps: 10,
 
         qrbox: {
@@ -465,9 +581,13 @@
     .catch(function(error) {
 
       document.getElementById("hasil").innerHTML =
+
         "<span class='error'>" +
+
         "❌ Kamera QR tidak dapat dibuka.<br><br>" +
+
         error +
+
         "</span>";
 
     });
@@ -485,4 +605,3 @@
 
 </body>
 </html>
-
