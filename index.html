@@ -20,28 +20,21 @@
     body {
       margin: 0;
       padding: 20px;
-
       font-family: Arial, sans-serif;
-
       background: #f5f6f8;
-
       color: #222;
     }
 
     .container {
       width: 100%;
       max-width: 520px;
-
       margin: auto;
     }
 
     .card {
       background: white;
-
       border-radius: 18px;
-
       padding: 24px;
-
       box-shadow:
         0 4px 20px
         rgba(0, 0, 0, 0.08);
@@ -49,19 +42,14 @@
 
     h1 {
       text-align: center;
-
       margin: 0;
-
       font-size: 27px;
     }
 
     .subtitle {
       text-align: center;
-
       color: #777;
-
       margin-top: 8px;
-
       margin-bottom: 25px;
     }
 
@@ -71,23 +59,16 @@
 
     label {
       display: block;
-
       font-weight: bold;
-
       margin-bottom: 8px;
     }
 
     #searchInput {
       width: 100%;
-
       padding: 14px;
-
       border: 1px solid #ddd;
-
       border-radius: 10px;
-
       font-size: 16px;
-
       outline: none;
     }
 
@@ -101,11 +82,8 @@
 
     #participantCount {
       margin-top: 10px;
-
       margin-bottom: 10px;
-
       color: #777;
-
       font-size: 13px;
     }
 
@@ -115,25 +93,17 @@
 
     #participantList {
       max-height: 400px;
-
       overflow-y: auto;
-
       margin-bottom: 20px;
     }
 
     .participant {
       padding: 15px;
-
       border: 1px solid #e4e4e4;
-
       border-radius: 10px;
-
       margin-bottom: 8px;
-
       cursor: pointer;
-
       background: white;
-
       transition: 0.15s;
     }
 
@@ -147,23 +117,18 @@
 
     .participant-name {
       font-size: 16px;
-
       font-weight: bold;
     }
 
     .participant-status {
       margin-top: 5px;
-
       font-size: 13px;
-
       color: #777;
     }
 
     .participant.disabled {
       opacity: 0.55;
-
       background: #f7f7f7;
-
       cursor: not-allowed;
     }
 
@@ -173,25 +138,19 @@
 
     #selectedBox {
       display: none;
-
       padding: 15px;
-
       margin-bottom: 20px;
-
       border-radius: 10px;
-
       background: #f1f1f1;
     }
 
     #selectedBox strong {
       display: block;
-
       margin-bottom: 5px;
     }
 
     #selectedName {
       font-size: 17px;
-
       font-weight: bold;
     }
 
@@ -201,27 +160,20 @@
 
     #cameraSection {
       display: none;
-
       margin-top: 10px;
     }
 
     #video {
       width: 100%;
-
       display: block;
-
       background: #000;
-
       border-radius: 12px;
     }
 
     #preview {
       width: 100%;
-
       display: none;
-
       margin-top: 10px;
-
       border-radius: 12px;
     }
 
@@ -235,45 +187,33 @@
 
     button {
       width: 100%;
-
       padding: 14px;
-
       border: none;
-
       border-radius: 10px;
-
       font-size: 16px;
-
       font-weight: bold;
-
       cursor: pointer;
-
       margin-top: 10px;
     }
 
     #takePhotoBtn {
       background: #333;
-
       color: white;
     }
 
     #submitBtn {
       background: #111;
-
       color: white;
     }
 
     #resetBtn {
       background: #e9e9e9;
-
       color: #222;
-
       margin-top: 15px;
     }
 
     button:disabled {
       opacity: 0.5;
-
       cursor: not-allowed;
     }
 
@@ -283,31 +223,22 @@
 
     #message {
       display: none;
-
       padding: 12px;
-
       border-radius: 10px;
-
       text-align: center;
-
       margin-top: 15px;
-
       font-size: 14px;
     }
 
     .success {
       display: block !important;
-
       background: #e8f5e9;
-
       color: #2e7d32;
     }
 
     .error {
       display: block !important;
-
       background: #ffebee;
-
       color: #c62828;
     }
 
@@ -317,17 +248,13 @@
 
     .loading {
       text-align: center;
-
       color: #777;
-
       padding: 20px;
     }
 
     .empty {
       text-align: center;
-
       color: #888;
-
       padding: 20px;
     }
 
@@ -338,11 +265,9 @@
 
 <body>
 
-
 <div class="container">
 
   <div class="card">
-
 
     <!-- =========================
          HEADER
@@ -946,7 +871,7 @@
 
 
   // =================================================
-  // BUKA KAMERA
+  // BUKA KAMERA BELAKANG
   // =================================================
 
   function bukaKamera() {
@@ -974,7 +899,9 @@
       .getUserMedia({
 
         video: {
-          facingMode: "user"
+          facingMode: {
+            ideal: "environment"
+          }
         },
 
         audio: false
@@ -1013,7 +940,7 @@
 
 
           showMessage(
-            "Kamera tidak bisa dibuka. Pastikan izin kamera sudah diberikan.",
+            "Kamera belakang tidak bisa dibuka. Pastikan izin kamera sudah diberikan.",
             "error"
           );
 
