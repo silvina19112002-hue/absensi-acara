@@ -3,11 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Absensi Acara</title>
 
@@ -35,9 +31,7 @@
       background: white;
       border-radius: 18px;
       padding: 24px;
-      box-shadow:
-        0 4px 20px
-        rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     h1 {
@@ -52,10 +46,6 @@
       margin-top: 8px;
       margin-bottom: 25px;
     }
-
-    /* =========================
-       SEARCH
-    ========================= */
 
     label {
       display: block;
@@ -76,20 +66,12 @@
       border-color: #555;
     }
 
-    /* =========================
-       COUNT
-    ========================= */
-
     #participantCount {
       margin-top: 10px;
       margin-bottom: 10px;
       color: #777;
       font-size: 13px;
     }
-
-    /* =========================
-       PARTICIPANT LIST
-    ========================= */
 
     #participantList {
       max-height: 400px;
@@ -132,10 +114,6 @@
       cursor: not-allowed;
     }
 
-    /* =========================
-       SELECTED
-    ========================= */
-
     #selectedBox {
       display: none;
       padding: 15px;
@@ -153,10 +131,6 @@
       font-size: 17px;
       font-weight: bold;
     }
-
-    /* =========================
-       CAMERA
-    ========================= */
 
     #cameraSection {
       display: none;
@@ -180,10 +154,6 @@
     #canvas {
       display: none;
     }
-
-    /* =========================
-       BUTTON
-    ========================= */
 
     button {
       width: 100%;
@@ -217,10 +187,6 @@
       cursor: not-allowed;
     }
 
-    /* =========================
-       MESSAGE
-    ========================= */
-
     #message {
       display: none;
       padding: 12px;
@@ -241,10 +207,6 @@
       background: #ffebee;
       color: #c62828;
     }
-
-    /* =========================
-       LOADING
-    ========================= */
 
     .loading {
       text-align: center;
@@ -269,10 +231,6 @@
 
   <div class="card">
 
-    <!-- =========================
-         HEADER
-    ========================= -->
-
     <h1>
       Absensi Acara
     </h1>
@@ -281,10 +239,6 @@
       Pilih nama dan ambil foto
     </div>
 
-
-    <!-- =========================
-         SEARCH
-    ========================= -->
 
     <label for="searchInput">
       Pilih Nama Peserta
@@ -297,15 +251,10 @@
       autocomplete="off"
     >
 
-
     <div id="participantCount">
       Memuat peserta...
     </div>
 
-
-    <!-- =========================
-         LIST
-    ========================= -->
 
     <div id="participantList">
 
@@ -315,10 +264,6 @@
 
     </div>
 
-
-    <!-- =========================
-         SELECTED
-    ========================= -->
 
     <div id="selectedBox">
 
@@ -331,16 +276,11 @@
     </div>
 
 
-    <!-- =========================
-         CAMERA
-    ========================= -->
-
     <div id="cameraSection">
 
       <label>
         Foto Kehadiran
       </label>
-
 
       <video
         id="video"
@@ -348,17 +288,12 @@
         playsinline
       ></video>
 
-
-      <canvas
-        id="canvas"
-      ></canvas>
-
+      <canvas id="canvas"></canvas>
 
       <img
         id="preview"
         alt="Preview foto"
       >
-
 
       <button
         id="takePhotoBtn"
@@ -366,7 +301,6 @@
       >
         📷 Ambil Foto
       </button>
-
 
       <button
         id="submitBtn"
@@ -379,16 +313,8 @@
     </div>
 
 
-    <!-- =========================
-         MESSAGE
-    ========================= -->
-
     <div id="message"></div>
 
-
-    <!-- =========================
-         RESET
-    ========================= -->
 
     <button
       id="resetBtn"
@@ -397,14 +323,12 @@
       Pilih Nama Lain
     </button>
 
-
   </div>
 
 </div>
 
 
 <script>
-
 
   // =================================================
   // URL APPS SCRIPT
@@ -434,21 +358,16 @@
   function loadPeserta() {
 
     const list =
-      document.getElementById(
-        "participantList"
-      );
+      document.getElementById("participantList");
 
     const count =
-      document.getElementById(
-        "participantCount"
-      );
+      document.getElementById("participantCount");
 
 
     list.innerHTML =
       '<div class="loading">' +
       'Memuat daftar nama...' +
       '</div>';
-
 
     count.textContent =
       "Memuat peserta...";
@@ -466,16 +385,11 @@
         response.status
       );
 
-
       if (!response.ok) {
-
         throw new Error(
-          "HTTP " +
-          response.status
+          "HTTP " + response.status
         );
-
       }
-
 
       return response.json();
 
@@ -487,7 +401,6 @@
         "Apps Script response:",
         result
       );
-
 
       if (
         !result ||
@@ -501,10 +414,8 @@
 
       }
 
-
       pesertaList =
         result.data || [];
-
 
       tampilkanPeserta(
         pesertaList
@@ -519,16 +430,12 @@
         error
       );
 
-
       list.innerHTML =
         '<div class="empty">' +
         'Gagal memuat daftar nama.' +
         '</div>';
 
-
-      count.textContent =
-        "";
-
+      count.textContent = "";
 
       showMessage(
         "Tidak dapat terhubung ke Apps Script. Cek Console untuk detail error.",
@@ -541,7 +448,7 @@
 
 
   // =================================================
-  // JALANKAN SAAT HALAMAN DIBUKA
+  // LOAD SAAT HALAMAN DIBUKA
   // =================================================
 
   document.addEventListener(
@@ -559,9 +466,7 @@
   // =================================================
 
   document
-    .getElementById(
-      "searchInput"
-    )
+    .getElementById("searchInput")
     .addEventListener(
       "input",
       function() {
@@ -607,15 +512,12 @@
   // TAMPILKAN PESERTA
   // =================================================
 
-  function tampilkanPeserta(
-    list
-  ) {
+  function tampilkanPeserta(list) {
 
     const container =
       document.getElementById(
         "participantList"
       );
-
 
     const count =
       document.getElementById(
@@ -623,13 +525,8 @@
       );
 
 
-    container.innerHTML =
-      "";
+    container.innerHTML = "";
 
-
-    // -----------------------------------------------
-    // JUMLAH
-    // -----------------------------------------------
 
     const total =
       list.length;
@@ -652,10 +549,6 @@
       " sudah absen";
 
 
-    // -----------------------------------------------
-    // KOSONG
-    // -----------------------------------------------
-
     if (total === 0) {
 
       container.innerHTML =
@@ -668,25 +561,16 @@
     }
 
 
-    // -----------------------------------------------
-    // BUAT LIST
-    // -----------------------------------------------
-
     list.forEach(
       function(peserta) {
 
         const item =
-          document.createElement(
-            "div"
-          );
+          document.createElement("div");
 
 
         item.className =
           "participant";
 
-
-        // Kalau sudah absen,
-        // buat terlihat disabled
 
         if (peserta.sudahDatang) {
 
@@ -744,12 +628,7 @@
   // PILIH PESERTA
   // =================================================
 
-  function pilihPeserta(
-    peserta
-  ) {
-
-    // Jangan izinkan peserta
-    // yang sudah absen
+  function pilihPeserta(peserta) {
 
     if (peserta.sudahDatang) {
 
@@ -768,45 +647,26 @@
       peserta;
 
 
-    fotoBase64 =
-      null;
+    fotoBase64 = null;
 
-
-    // -----------------------------------------------
-    // NAMA TERPILIH
-    // -----------------------------------------------
 
     document
-      .getElementById(
-        "selectedName"
-      )
+      .getElementById("selectedName")
       .textContent =
       peserta.nama;
 
 
     document
-      .getElementById(
-        "selectedBox"
-      )
+      .getElementById("selectedBox")
       .style.display =
       "block";
 
-
-    // -----------------------------------------------
-    // CAMERA
-    // -----------------------------------------------
 
     document
-      .getElementById(
-        "cameraSection"
-      )
+      .getElementById("cameraSection")
       .style.display =
       "block";
 
-
-    // -----------------------------------------------
-    // RESET PREVIEW
-    // -----------------------------------------------
 
     const preview =
       document.getElementById(
@@ -814,26 +674,19 @@
       );
 
 
-    preview.src =
-      "";
-
+    preview.src = "";
 
     preview.style.display =
       "none";
 
 
     document
-      .getElementById(
-        "submitBtn"
-      )
-      .disabled =
-      true;
+      .getElementById("submitBtn")
+      .disabled = true;
 
 
     document
-      .getElementById(
-        "submitBtn"
-      )
+      .getElementById("submitBtn")
       .textContent =
       "✓ Absen";
 
@@ -841,16 +694,8 @@
     hideMessage();
 
 
-    // -----------------------------------------------
-    // BUKA KAMERA
-    // -----------------------------------------------
-
     bukaKamera();
 
-
-    // -----------------------------------------------
-    // SCROLL
-    // -----------------------------------------------
 
     setTimeout(
       function() {
@@ -874,7 +719,7 @@
   // BUKA KAMERA BELAKANG
   // =================================================
 
-  function bukaKamera() {
+  async function bukaKamera() {
 
     if (
       !navigator.mediaDevices ||
@@ -894,58 +739,233 @@
     stopCamera();
 
 
-    navigator
-      .mediaDevices
-      .getUserMedia({
+    try {
 
-        video: {
-          facingMode: {
-            ideal: "environment"
+      /*
+       * LANGKAH 1
+       * Minta kamera belakang secara langsung.
+       */
+
+      let stream;
+
+      try {
+
+        stream =
+          await navigator.mediaDevices
+            .getUserMedia({
+
+              video: {
+                facingMode: {
+                  exact: "environment"
+                }
+              },
+
+              audio: false
+
+            });
+
+      } catch (error) {
+
+        console.warn(
+          "exact environment gagal:",
+          error
+        );
+
+
+        /*
+         * LANGKAH 2
+         * Minta akses kamera terlebih dahulu.
+         * Setelah izin diberikan, kita bisa
+         * melihat daftar device kamera.
+         */
+
+        stream =
+          await navigator.mediaDevices
+            .getUserMedia({
+
+              video: true,
+
+              audio: false
+
+            });
+
+      }
+
+
+      /*
+       * Simpan stream sementara.
+       */
+
+      stopCamera();
+
+
+      /*
+       * Ambil daftar semua kamera.
+       */
+
+      const devices =
+        await navigator.mediaDevices
+          .enumerateDevices();
+
+
+      const cameras =
+        devices.filter(
+          function(device) {
+
+            return device.kind ===
+              "videoinput";
+
           }
-        },
-
-        audio: false
-
-      })
-
-      .then(
-        function(stream) {
-
-          streamCamera =
-            stream;
+        );
 
 
-          const video =
-            document.getElementById(
-              "video"
+      console.log(
+        "Daftar kamera:",
+        cameras
+      );
+
+
+      /*
+       * Cari kamera yang kemungkinan
+       * merupakan kamera belakang.
+       */
+
+      const backCamera =
+        cameras.find(
+          function(camera) {
+
+            const label =
+              (camera.label || "")
+                .toLowerCase();
+
+            return (
+              label.includes("back") ||
+              label.includes("rear") ||
+              label.includes("environment") ||
+              label.includes("facing")
             );
 
+          }
+        );
 
-          video.srcObject =
-            stream;
+
+      /*
+       * Kalau kamera belakang ditemukan,
+       * gunakan deviceId kamera tersebut.
+       */
+
+      if (backCamera) {
+
+        console.log(
+          "Kamera belakang ditemukan:",
+          backCamera.label
+        );
 
 
-          video.play();
+        /*
+         * Matikan stream sementara.
+         */
 
-        }
-      )
-
-      .catch(
-        function(error) {
-
-          console.error(
-            "Camera error:",
-            error
+        stream.getTracks()
+          .forEach(
+            function(track) {
+              track.stop();
+            }
           );
 
 
-          showMessage(
-            "Kamera belakang tidak bisa dibuka. Pastikan izin kamera sudah diberikan.",
-            "error"
-          );
+        /*
+         * Buka kamera belakang
+         * berdasarkan deviceId.
+         */
 
-        }
+        stream =
+          await navigator.mediaDevices
+            .getUserMedia({
+
+              video: {
+                deviceId: {
+                  exact:
+                    backCamera.deviceId
+                }
+              },
+
+              audio: false
+
+            });
+
+      }
+
+
+      /*
+       * Simpan stream final.
+       */
+
+      streamCamera =
+        stream;
+
+
+      const video =
+        document.getElementById(
+          "video"
+        );
+
+
+      video.srcObject =
+        stream;
+
+
+      video.setAttribute(
+        "playsinline",
+        ""
       );
+
+
+      video.setAttribute(
+        "autoplay",
+        ""
+      );
+
+
+      await video.play();
+
+
+      /*
+       * Cek kamera yang benar-benar
+       * sedang digunakan.
+       */
+
+      const tracks =
+        stream.getVideoTracks();
+
+
+      if (tracks.length > 0) {
+
+        const settings =
+          tracks[0].getSettings();
+
+        console.log(
+          "Kamera aktif:",
+          settings
+        );
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Camera error:",
+        error
+      );
+
+
+      showMessage(
+        "Kamera belakang tidak bisa dibuka. Pastikan izin kamera sudah diberikan.",
+        "error"
+      );
+
+    }
 
   }
 
@@ -1003,10 +1023,6 @@
     }
 
 
-    // -----------------------------------------------
-    // CANVAS
-    // -----------------------------------------------
-
     canvas.width =
       width;
 
@@ -1016,9 +1032,7 @@
 
 
     const context =
-      canvas.getContext(
-        "2d"
-      );
+      canvas.getContext("2d");
 
 
     context.drawImage(
@@ -1030,20 +1044,12 @@
     );
 
 
-    // -----------------------------------------------
-    // BASE64
-    // -----------------------------------------------
-
     fotoBase64 =
       canvas.toDataURL(
         "image/jpeg",
         0.75
       );
 
-
-    // -----------------------------------------------
-    // PREVIEW
-    // -----------------------------------------------
 
     const preview =
       document.getElementById(
@@ -1058,10 +1064,6 @@
     preview.style.display =
       "block";
 
-
-    // -----------------------------------------------
-    // AKTIFKAN ABSEN
-    // -----------------------------------------------
 
     document
       .getElementById(
@@ -1115,9 +1117,7 @@
       );
 
 
-    button.disabled =
-      true;
-
+    button.disabled = true;
 
     button.textContent =
       "Menyimpan...";
@@ -1167,7 +1167,6 @@
           response.status
         );
 
-
         return response.json();
 
       }
@@ -1194,8 +1193,6 @@
 
           stopCamera();
 
-
-          // Update status
 
           pesertaTerpilih.sudahDatang =
             true;
@@ -1320,17 +1317,12 @@
       null;
 
 
-    // Search
-
     document
       .getElementById(
         "searchInput"
       )
-      .value =
-      "";
+      .value = "";
 
-
-    // Selected
 
     document
       .getElementById(
@@ -1340,8 +1332,6 @@
       "none";
 
 
-    // Camera
-
     document
       .getElementById(
         "cameraSection"
@@ -1350,8 +1340,6 @@
       "none";
 
 
-    // Preview
-
     document
       .getElementById(
         "preview"
@@ -1364,11 +1352,8 @@
       .getElementById(
         "preview"
       )
-      .src =
-      "";
+      .src = "";
 
-
-    // Button
 
     document
       .getElementById(
@@ -1388,8 +1373,6 @@
 
     hideMessage();
 
-
-    // Tampilkan semua nama
 
     tampilkanPeserta(
       pesertaList
@@ -1455,9 +1438,7 @@
   // ESCAPE HTML
   // =================================================
 
-  function escapeHtml(
-    text
-  ) {
+  function escapeHtml(text) {
 
     const div =
       document.createElement(
