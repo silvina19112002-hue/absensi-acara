@@ -12,481 +12,264 @@
 
   <title>Absensi Acara</title>
 
-
   <style>
 
     * {
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
       padding: 20px;
-
       font-family: Arial, sans-serif;
-
       background: #f5f6f8;
-
       color: #222;
-
     }
-
 
     .container {
-
       max-width: 600px;
-
       margin: 0 auto;
-
       background: #fff;
-
       padding: 25px;
-
       border-radius: 15px;
-
-      box-shadow:
-        0 4px 15px
-        rgba(0,0,0,0.08);
-
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
-
 
     h1 {
-
       text-align: center;
-
       margin: 0 0 8px 0;
-
     }
-
 
     .subtitle {
-
       text-align: center;
-
       color: #666;
-
       margin-bottom: 25px;
-
     }
-
 
     label {
-
       display: block;
-
       font-weight: bold;
-
       margin-bottom: 8px;
-
     }
-
 
     input[type="text"] {
-
       width: 100%;
-
       padding: 12px;
-
       border: 1px solid #ddd;
-
       border-radius: 8px;
-
       font-size: 16px;
-
       margin-bottom: 15px;
-
       outline: none;
-
     }
-
 
     input[type="text"]:focus {
-
       border-color: #4a73e8;
-
     }
-
 
     .name-list {
-
       display: flex;
-
       flex-direction: column;
-
       gap: 8px;
-
       max-height: 350px;
-
       overflow-y: auto;
-
       margin-bottom: 15px;
-
     }
-
 
     .name-item {
-
       padding: 13px 15px;
-
       border: 1px solid #ddd;
-
       border-radius: 8px;
-
       cursor: pointer;
-
       background: #fff;
-
       transition: 0.15s;
-
     }
-
 
     .name-item:hover {
-
       background: #f0f4ff;
-
     }
-
 
     .name-item.disabled {
-
       background: #f3f3f3;
-
       color: #999;
-
       cursor: not-allowed;
-
     }
-
 
     .status {
-
       font-size: 13px;
-
       color: #777;
-
       margin-top: 4px;
-
     }
-
 
     .empty {
-
       text-align: center;
-
       padding: 18px;
-
       color: #888;
-
       border: 1px dashed #ddd;
-
       border-radius: 8px;
-
     }
-
 
     .loading {
-
       text-align: center;
-
       padding: 20px;
-
       color: #666;
-
     }
 
-
-    /* =====================================================
-       TAMBAH NAMA
-       ===================================================== */
+    /* TAMBAH NAMA */
 
     .add-box {
-
       display: none;
-
       padding: 15px;
-
       border-radius: 10px;
-
       background: #fff8e6;
-
       border: 1px solid #f0d58a;
-
       margin-bottom: 20px;
-
     }
-
 
     .add-box.show {
-
       display: block;
-
     }
-
 
     .add-title {
-
       font-weight: bold;
-
       margin-bottom: 5px;
-
     }
-
 
     .add-description {
-
       font-size: 14px;
-
       color: #666;
-
       margin-bottom: 10px;
-
       line-height: 1.4;
-
     }
 
-
-    /* =====================================================
-       SELECTED
-       ===================================================== */
+    /* SELECTED */
 
     .selected-box {
-
       display: none;
-
       padding: 15px;
-
       background: #f5f7ff;
-
       border-radius: 10px;
-
       margin-bottom: 20px;
-
     }
-
 
     .selected-box.show {
-
       display: block;
-
     }
-
 
     .selected-name {
-
       font-size: 18px;
-
       font-weight: bold;
-
       margin-top: 4px;
-
     }
 
-
-    /* =====================================================
-       CAMERA
-       ===================================================== */
+    /* CAMERA */
 
     .camera-section {
-
       display: none;
-
       margin-top: 20px;
-
     }
-
 
     .camera-section.show {
-
       display: block;
-
     }
-
 
     .camera-info {
-
       text-align: center;
-
       font-size: 13px;
-
       color: #666;
-
       margin-bottom: 8px;
-
     }
-
 
     video {
-
       width: 100%;
-
       max-width: 100%;
-
       min-height: 250px;
-
       border-radius: 10px;
-
       background: #000;
-
       display: block;
-
       object-fit: cover;
-
     }
-
 
     canvas {
-
       display: none;
-
     }
 
-
-    /* =====================================================
-       PREVIEW
-       ===================================================== */
+    /* PREVIEW */
 
     .preview {
-
       display: none;
-
       margin-top: 15px;
-
     }
-
 
     .preview.show {
-
       display: block;
-
     }
-
 
     .preview img {
-
       width: 100%;
-
       display: block;
-
       border-radius: 10px;
-
     }
 
-
-    /* =====================================================
-       BUTTON
-       ===================================================== */
+    /* BUTTON */
 
     button {
-
       width: 100%;
-
       border: none;
-
       padding: 13px;
-
       border-radius: 8px;
-
       font-size: 16px;
-
       cursor: pointer;
-
       margin-top: 10px;
-
     }
-
 
     button:disabled {
-
       opacity: 0.6;
-
       cursor: not-allowed;
-
     }
-
 
     .btn-add {
-
       background: #f0a500;
-
       color: #fff;
-
     }
-
 
     .btn-capture {
-
       background: #4a73e8;
-
       color: #fff;
-
     }
-
 
     .btn-save {
-
       background: #20a464;
-
       color: #fff;
-
     }
-
 
     .btn-reset {
-
       background: #ddd;
-
       color: #222;
-
     }
 
-
-    /* =====================================================
-       MESSAGE
-       ===================================================== */
+    /* MESSAGE */
 
     .message {
-
       padding: 12px;
-
       border-radius: 8px;
-
       margin-top: 15px;
-
       display: none;
-
       text-align: center;
-
       line-height: 1.4;
-
     }
-
 
     .message.show {
-
       display: block;
-
     }
-
 
     .message.success {
-
       background: #e7f7ee;
-
       color: #167342;
-
     }
 
-
     .message.error {
-
       background: #fdeaea;
-
       color: #b42318;
-
     }
 
   </style>
@@ -496,32 +279,22 @@
 
 <body>
 
-
 <div class="container">
-
-
-  <!-- ===================================================
-       HEADER
-       =================================================== -->
 
   <h1>
     Absensi Acara
   </h1>
-
 
   <div class="subtitle">
     Pilih nama dan ambil foto
   </div>
 
 
-  <!-- ===================================================
-       SEARCH
-       =================================================== -->
+  <!-- SEARCH -->
 
   <label for="search">
     Cari Nama Peserta
   </label>
-
 
   <input
     type="text"
@@ -532,9 +305,7 @@
   >
 
 
-  <!-- ===================================================
-       DAFTAR PESERTA
-       =================================================== -->
+  <!-- DAFTAR PESERTA -->
 
   <div
     id="nameList"
@@ -548,9 +319,7 @@
   </div>
 
 
-  <!-- ===================================================
-       TAMBAH NAMA
-       =================================================== -->
+  <!-- TAMBAH NAMA -->
 
   <div
     id="addBox"
@@ -561,12 +330,10 @@
       Tidak menemukan nama?
     </div>
 
-
     <div class="add-description">
       Kalau peserta belum ada di daftar,
       kamu bisa menambahkan nama baru.
     </div>
-
 
     <button
       type="button"
@@ -579,9 +346,7 @@
   </div>
 
 
-  <!-- ===================================================
-       NAMA TERPILIH
-       =================================================== -->
+  <!-- NAMA TERPILIH -->
 
   <div
     id="selectedBox"
@@ -592,7 +357,6 @@
       Nama terpilih:
     </div>
 
-
     <div
       id="selectedName"
       class="selected-name"
@@ -601,9 +365,7 @@
   </div>
 
 
-  <!-- ===================================================
-       CAMERA
-       =================================================== -->
+  <!-- CAMERA -->
 
   <div
     id="cameraSection"
@@ -614,18 +376,15 @@
       Foto Kehadiran
     </label>
 
-
     <div class="camera-info">
-      📷 Kamera belakang
+      📷 Kamera belakang • Resolusi tinggi
     </div>
-
 
     <video
       id="video"
       autoplay
       playsinline
     ></video>
-
 
     <canvas
       id="canvas"
@@ -685,15 +444,12 @@
   </div>
 
 
-  <!-- ===================================================
-       MESSAGE
-       =================================================== -->
+  <!-- MESSAGE -->
 
   <div
     id="message"
     class="message"
   ></div>
-
 
 </div>
 
@@ -831,10 +587,6 @@ function tampilkanNama(data) {
   list.innerHTML = "";
 
 
-  // ===================================================
-  // HASIL KOSONG
-  // ===================================================
-
   if (
     !data ||
     data.length === 0
@@ -848,10 +600,6 @@ function tampilkanNama(data) {
 
   }
 
-
-  // ===================================================
-  // TAMPILKAN PESERTA
-  // ===================================================
 
   if (
     data &&
@@ -870,8 +618,6 @@ function tampilkanNama(data) {
         div.className =
           "name-item";
 
-
-        // Sudah hadir
 
         if (
           item.sudahDatang
@@ -921,9 +667,6 @@ function tampilkanNama(data) {
         `;
 
 
-        // Peserta belum hadir
-        // bisa dipilih
-
         if (
           !item.sudahDatang
         ) {
@@ -950,9 +693,7 @@ function tampilkanNama(data) {
   }
 
 
-  // ===================================================
   // TOMBOL TAMBAH SELALU MUNCUL
-  // ===================================================
 
   addBox.classList.add(
     "show"
@@ -1065,8 +806,6 @@ function tampilkanFormTambah() {
   }
 
 
-  // Konfirmasi sederhana
-
   const lanjut =
     confirm(
       'Tambahkan peserta dengan nama "' +
@@ -1177,10 +916,6 @@ async function tambahPesertaBaru(
     }
 
 
-    // =================================================
-    // BUAT OBJECT PESERTA BARU
-    // =================================================
-
     const pesertaBaru = {
 
       id:
@@ -1204,10 +939,6 @@ async function tambahPesertaBaru(
       pesertaBaru
     );
 
-
-    // =================================================
-    // PILIH PESERTA BARU
-    // =================================================
 
     pesertaTerpilih =
       pesertaBaru;
@@ -1283,8 +1014,6 @@ async function tambahPesertaBaru(
       "success"
     );
 
-
-    // Buka kamera belakang
 
     await bukaKamera();
 
@@ -1438,7 +1167,7 @@ async function pilihPeserta(
 
 
 // =========================================================
-// KAMERA BELAKANG
+// KAMERA BELAKANG RESOLUSI TINGGI
 // =========================================================
 
 async function bukaKamera() {
@@ -1464,9 +1193,15 @@ async function bukaKamera() {
 
   try {
 
-    // ===================================================
-    // HARUS KAMERA BELAKANG
-    // ===================================================
+    /*
+     * Kamera belakang.
+     *
+     * exact environment =
+     * harus kamera belakang.
+     *
+     * ideal 1920x1080 =
+     * meminta resolusi tinggi.
+     */
 
     stream =
       await navigator.mediaDevices
@@ -1475,16 +1210,20 @@ async function bukaKamera() {
           video: {
 
             facingMode: {
+              exact: "environment"
+            },
 
-              exact:
-                "environment"
+            width: {
+              ideal: 1920
+            },
 
+            height: {
+              ideal: 1080
             }
 
           },
 
-          audio:
-            false
+          audio: false
 
         });
 
@@ -1502,9 +1241,7 @@ async function bukaKamera() {
     await video.play();
 
 
-    // ===================================================
-    // CEK KAMERA
-    // ===================================================
+    // Cek setting kamera
 
     const track =
       stream
@@ -1521,9 +1258,16 @@ async function bukaKamera() {
     );
 
 
-    // Jika browser memberi
-    // facingMode dan bukan environment,
-    // jangan lanjut.
+    console.log(
+      "Camera resolution:",
+      settings.width,
+      "x",
+      settings.height
+    );
+
+
+    // Kalau browser memberikan
+    // facingMode dan ternyata bukan belakang
 
     if (
       settings.facingMode &&
@@ -1612,12 +1356,16 @@ function ambilFoto() {
     );
 
 
-  // ===================================================
-  // BATAS FOTO
-  // ===================================================
+  /*
+   * Maksimal ukuran foto.
+   *
+   * 1600 px cukup tajam
+   * untuk dokumentasi/absensi
+   * tanpa membuat file terlalu besar.
+   */
 
   const MAX_SIZE =
-    960;
+    1600;
 
 
   let width =
@@ -1644,11 +1392,15 @@ function ambilFoto() {
   }
 
 
-  // Landscape
+  // ===================================================
+  // RESIZE
+  // ===================================================
 
   if (
     width > height
   ) {
+
+    // Landscape
 
     if (
       width > MAX_SIZE
@@ -1667,11 +1419,9 @@ function ambilFoto() {
 
     }
 
-  }
+  } else {
 
-  // Portrait
-
-  else {
+    // Portrait
 
     if (
       height > MAX_SIZE
@@ -1722,10 +1472,16 @@ function ambilFoto() {
   // KOMPRES JPEG
   // ===================================================
 
+  /*
+   * Quality 0.75 =
+   * kualitas lebih bagus
+   * daripada sebelumnya 0.55.
+   */
+
   fotoBase64 =
     canvas.toDataURL(
       "image/jpeg",
-      0.55
+      0.75
     );
 
 
@@ -1763,8 +1519,7 @@ function ambilFoto() {
   );
 
 
-  // Matikan kamera
-  // setelah foto diambil
+  // Matikan kamera setelah foto
 
   hentikanKamera();
 
@@ -1823,10 +1578,6 @@ async function simpanFoto() {
       "saveBtn"
     );
 
-
-  // ===================================================
-  // LOCK BUTTON
-  // ===================================================
 
   saveBtn.disabled =
     true;
@@ -1909,10 +1660,6 @@ async function simpanFoto() {
     }
 
 
-    // =================================================
-    // BERHASIL
-    // =================================================
-
     saveBtn.textContent =
       "✓ Berhasil Disimpan";
 
@@ -1927,9 +1674,7 @@ async function simpanFoto() {
     );
 
 
-    // =================================================
     // UPDATE DATA LOKAL
-    // =================================================
 
     const index =
       peserta.findIndex(
@@ -1951,20 +1696,16 @@ async function simpanFoto() {
 
       peserta[index]
         .sudahDatang =
-          true;
+        true;
 
 
       peserta[index]
         .jamDatang =
-          result.waktu ||
-          "";
+        result.waktu ||
+        "";
 
     }
 
-
-    // =================================================
-    // RESET
-    // =================================================
 
     setTimeout(
 
@@ -2138,8 +1879,7 @@ function resetAbsensi() {
 
   window.scrollTo({
 
-    top:
-      0,
+    top: 0,
 
     behavior:
       "smooth"
@@ -2231,7 +1971,6 @@ window.addEventListener(
 );
 
 </script>
-
 
 </body>
 
