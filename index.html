@@ -1,260 +1,565 @@
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Absensi Acara</title>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+
     body {
+
       margin: 0;
+
       padding: 20px;
+
       font-family: Arial, sans-serif;
+
       background: #f5f6f8;
+
       color: #222;
+
     }
+
 
     .container {
+
       max-width: 600px;
+
       margin: 0 auto;
+
       background: white;
+
       padding: 25px;
+
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.08);
+
     }
+
 
     h1 {
+
       text-align: center;
+
       margin: 0 0 8px;
+
     }
+
 
     .subtitle {
+
       text-align: center;
+
       color: #666;
+
       margin-bottom: 25px;
+
     }
+
 
     label {
+
       display: block;
+
       font-weight: bold;
+
       margin-bottom: 8px;
+
     }
+
 
     input[type="text"] {
+
       width: 100%;
+
       padding: 12px;
+
       border: 1px solid #ddd;
+
       border-radius: 8px;
+
       font-size: 16px;
-      margin-bottom: 15px;
+
+      margin-bottom: 10px;
+
       outline: none;
+
     }
+
 
     input[type="text"]:focus {
+
       border-color: #4a73e8;
+
     }
+
+
+    /* =====================================================
+       TAMBAH PESERTA
+    ===================================================== */
+
+    .add-section {
+
+      margin-bottom: 25px;
+
+      padding: 15px;
+
+      background: #f7f8fc;
+
+      border-radius: 10px;
+
+      border: 1px solid #e5e7eb;
+
+    }
+
+
+    .add-title {
+
+      font-weight: bold;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .btn-add {
+
+      background: #4a73e8;
+
+      color: white;
+
+      margin-top: 0;
+
+    }
+
+
+    /* =====================================================
+       NAME LIST
+    ===================================================== */
 
     .name-list {
+
       display: flex;
+
       flex-direction: column;
+
       gap: 8px;
+
       max-height: 350px;
+
       overflow-y: auto;
+
       margin-bottom: 20px;
+
     }
+
 
     .name-item {
+
       padding: 13px 15px;
+
       border: 1px solid #ddd;
+
       border-radius: 8px;
+
       cursor: pointer;
+
       background: #fff;
+
       transition: 0.2s;
+
     }
+
 
     .name-item:hover {
+
       background: #f0f4ff;
+
     }
+
 
     .name-item.disabled {
+
       background: #f3f3f3;
+
       color: #999;
+
       cursor: not-allowed;
+
     }
+
 
     .status {
+
       font-size: 13px;
+
       color: #777;
+
       margin-top: 4px;
+
     }
+
+
+    /* =====================================================
+       SELECTED
+    ===================================================== */
 
     .selected-box {
+
       display: none;
+
       padding: 15px;
+
       background: #f5f7ff;
+
       border-radius: 10px;
+
       margin-bottom: 20px;
+
     }
+
 
     .selected-box.show {
+
       display: block;
+
     }
+
 
     .selected-name {
+
       font-size: 18px;
+
       font-weight: bold;
+
       margin-top: 4px;
+
     }
+
+
+    /* =====================================================
+       CAMERA
+    ===================================================== */
 
     .camera-section {
+
       display: none;
+
       margin-top: 20px;
+
     }
 
+
     .camera-section.show {
+
       display: block;
+
     }
+
 
     video,
     canvas {
+
       width: 100%;
+
       max-width: 100%;
+
       border-radius: 10px;
+
       background: #000;
+
       display: block;
+
     }
+
 
     video {
+
       min-height: 200px;
+
       object-fit: cover;
+
     }
+
 
     canvas {
+
       display: none;
+
     }
 
-    .preview {
-      display: none;
-      margin-top: 15px;
-    }
-
-    .preview.show {
-      display: block;
-    }
-
-    .preview img {
-      width: 100%;
-      border-radius: 10px;
-      display: block;
-    }
-
-    button {
-      width: 100%;
-      border: none;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .btn-capture {
-      background: #4a73e8;
-      color: white;
-    }
-
-    .btn-save {
-      background: #20a464;
-      color: white;
-    }
-
-    .btn-reset {
-      background: #ddd;
-      color: #222;
-    }
-
-    .message {
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 15px;
-      display: none;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.success {
-      background: #e7f7ee;
-      color: #167342;
-    }
-
-    .message.error {
-      background: #fdeaea;
-      color: #b42318;
-    }
-
-    .message.info {
-      background: #eef4ff;
-      color: #2454a6;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 20px;
-      color: #888;
-    }
-
-    .retry-btn {
-      background: #4a73e8;
-      color: white;
-      max-width: 220px;
-      margin: 12px auto 0;
-      display: block;
-    }
 
     .camera-help {
+
       font-size: 13px;
+
       color: #777;
+
       margin-top: 8px;
+
       text-align: center;
+
     }
+
+
+    /* =====================================================
+       PREVIEW
+    ===================================================== */
+
+    .preview {
+
+      display: none;
+
+      margin-top: 15px;
+
+    }
+
+
+    .preview.show {
+
+      display: block;
+
+    }
+
+
+    .preview img {
+
+      width: 100%;
+
+      border-radius: 10px;
+
+      display: block;
+
+    }
+
+
+    /* =====================================================
+       BUTTON
+    ===================================================== */
+
+    button {
+
+      width: 100%;
+
+      border: none;
+
+      padding: 13px;
+
+      border-radius: 8px;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      margin-top: 10px;
+
+    }
+
+
+    button:disabled {
+
+      opacity: 0.6;
+
+      cursor: not-allowed;
+
+    }
+
+
+    .btn-capture {
+
+      background: #4a73e8;
+
+      color: white;
+
+    }
+
+
+    .btn-save {
+
+      background: #20a464;
+
+      color: white;
+
+    }
+
+
+    .btn-reset {
+
+      background: #ddd;
+
+      color: #222;
+
+    }
+
+
+    /* =====================================================
+       MESSAGE
+    ===================================================== */
+
+    .message {
+
+      padding: 12px;
+
+      border-radius: 8px;
+
+      margin-top: 15px;
+
+      display: none;
+
+      text-align: center;
+
+      line-height: 1.5;
+
+    }
+
+
+    .message.show {
+
+      display: block;
+
+    }
+
+
+    .message.success {
+
+      background: #e7f7ee;
+
+      color: #167342;
+
+    }
+
+
+    .message.error {
+
+      background: #fdeaea;
+
+      color: #b42318;
+
+    }
+
+
+    .message.info {
+
+      background: #eef4ff;
+
+      color: #2454a6;
+
+    }
+
+
+    .loading {
+
+      text-align: center;
+
+      padding: 20px;
+
+      color: #666;
+
+    }
+
+
+    .empty {
+
+      text-align: center;
+
+      padding: 20px;
+
+      color: #888;
+
+    }
+
+
+    .retry-btn {
+
+      background: #4a73e8;
+
+      color: white;
+
+      max-width: 220px;
+
+      margin: 12px auto 0;
+
+      display: block;
+
+    }
+
   </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-  <h1>Absensi Acara</h1>
+
+  <h1>
+    Absensi Acara
+  </h1>
+
 
   <div class="subtitle">
     Pilih nama dan ambil foto
   </div>
 
-  <!-- SEARCH -->
+
+  <!-- =====================================================
+       TAMBAH PESERTA
+  ====================================================== -->
+
+  <div class="add-section">
+
+    <div class="add-title">
+      ➕ Tambah Peserta Baru
+    </div>
+
+
+    <input
+      type="text"
+      id="newParticipantName"
+      placeholder="Masukkan nama peserta..."
+      autocomplete="off"
+      onkeydown="handleAddEnter(event)"
+    >
+
+
+    <button
+      id="addBtn"
+      class="btn-add"
+      onclick="tambahPesertaBaru()"
+    >
+      + Tambah Peserta
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       SEARCH
+  ====================================================== -->
+
   <label for="search">
     Cari Nama Peserta
   </label>
+
 
   <input
     type="text"
@@ -264,19 +569,36 @@
     oninput="filterNama()"
   >
 
-  <!-- NAME LIST -->
-  <div id="nameList" class="name-list">
+
+  <!-- =====================================================
+       NAME LIST
+  ====================================================== -->
+
+  <div
+    id="nameList"
+    class="name-list"
+  >
+
     <div class="loading">
-      Memuat daftar peserta...
+      ⏳ Memuat daftar peserta...
     </div>
+
   </div>
 
-  <!-- SELECTED PARTICIPANT -->
-  <div id="selectedBox" class="selected-box">
+
+  <!-- =====================================================
+       SELECTED PARTICIPANT
+  ====================================================== -->
+
+  <div
+    id="selectedBox"
+    class="selected-box"
+  >
 
     <div>
       Nama terpilih:
     </div>
+
 
     <div
       id="selectedName"
@@ -285,7 +607,11 @@
 
   </div>
 
-  <!-- CAMERA -->
+
+  <!-- =====================================================
+       CAMERA
+  ====================================================== -->
+
   <div
     id="cameraSection"
     class="camera-section"
@@ -295,6 +621,7 @@
       Foto Kehadiran
     </label>
 
+
     <video
       id="video"
       autoplay
@@ -302,11 +629,14 @@
       muted
     ></video>
 
+
     <div class="camera-help">
       Pastikan wajah terlihat jelas sebelum mengambil foto.
     </div>
 
+
     <canvas id="canvas"></canvas>
+
 
     <button
       id="captureBtn"
@@ -316,18 +646,24 @@
       📸 Ambil Foto
     </button>
 
+
     <!-- PREVIEW -->
+
     <div
       id="preview"
       class="preview"
     >
+
       <img
         id="previewImage"
         alt="Preview foto"
       >
+
     </div>
 
+
     <!-- SAVE -->
+
     <button
       id="saveBtn"
       class="btn-save"
@@ -337,7 +673,9 @@
       💾 Simpan Kehadiran
     </button>
 
+
     <!-- RESET -->
+
     <button
       class="btn-reset"
       onclick="resetAbsensi()"
@@ -347,1443 +685,1636 @@
 
   </div>
 
+
   <!-- MESSAGE -->
+
   <div
     id="message"
     class="message"
   ></div>
+
 
 </div>
 
 
 <script>
 
-  /* =========================================================
-     CONFIG
-  ========================================================= */
 
-  const API_URL =
-    "https://script.google.com/macros/s/AKfycbxbdqh0t_tE8JovVB9tYK7ya1RtaiQTrc5CI2zlSFj0GG3HJXyQR4ot1wRWibAIJTI0/exec";
+/* =========================================================
+   CONFIG
+========================================================= */
 
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxbdqh0t_tE8JovVB9tYK7ya1RtaiQTrc5CI2zlSFj0GG3HJXyQR4ot1wRWibAIJTI0/exec";
 
-  /* =========================================================
-     VARIABLES
-  ========================================================= */
 
-  let peserta = [];
+/* =========================================================
+   VARIABLES
+========================================================= */
 
-  let pesertaTerpilih = null;
+let peserta = [];
 
-  let fotoBase64 = null;
+let pesertaTerpilih = null;
 
-  let stream = null;
+let fotoBase64 = null;
 
+let stream = null;
 
-  /* =========================================================
-     PAGE LOAD
-  ========================================================= */
 
-  window.addEventListener(
-    "load",
-    function() {
+/* =========================================================
+   LOAD PAGE
+========================================================= */
 
-      loadPeserta();
+window.addEventListener(
+  "load",
+  function() {
 
-    }
-  );
-
-
-  /* =========================================================
-     LOAD PESERTA
-  ========================================================= */
-
-  async function loadPeserta() {
-
-    const list =
-      document.getElementById("nameList");
-
-    list.innerHTML =
-      '<div class="loading">⏳ Memuat daftar peserta...</div>';
-
-    hideMessage();
-
-
-    try {
-
-      /*
-       * Cache busting.
-       * Supaya browser tidak mengambil response lama.
-       */
-
-      const url =
-        API_URL +
-        "?action=daftarPeserta&_=" +
-        Date.now();
-
-
-      console.log(
-        "Mengambil data dari:",
-        url
-      );
-
-
-      /*
-       * Timeout 20 detik.
-       */
-
-      const controller =
-        new AbortController();
-
-      const timeout =
-        setTimeout(
-          function() {
-            controller.abort();
-          },
-          20000
-        );
-
-
-      const response =
-        await fetch(
-          url,
-          {
-            method: "GET",
-            mode: "cors",
-            cache: "no-store",
-            redirect: "follow",
-            signal: controller.signal
-          }
-        );
-
-
-      clearTimeout(timeout);
-
-
-      console.log(
-        "HTTP status:",
-        response.status
-      );
-
-
-      if (!response.ok) {
-
-        throw new Error(
-          "Server mengembalikan HTTP " +
-          response.status
-        );
-
-      }
-
-
-      /*
-       * Ambil response sebagai TEXT dulu.
-       * Ini lebih aman daripada langsung response.json().
-       */
-
-      const text =
-        await response.text();
-
-
-      console.log(
-        "Response Apps Script:",
-        text.substring(0, 500)
-      );
-
-
-      if (!text) {
-
-        throw new Error(
-          "Response dari server kosong."
-        );
-
-      }
-
-
-      let result;
-
-
-      try {
-
-        result =
-          JSON.parse(text);
-
-      } catch (jsonError) {
-
-        console.error(
-          "JSON parse error:",
-          jsonError
-        );
-
-        throw new Error(
-          "Response server bukan JSON yang valid."
-        );
-
-      }
-
-
-      /*
-       * Validasi response.
-       */
-
-      if (
-        !result ||
-        result.success !== true
-      ) {
-
-        throw new Error(
-          result &&
-          result.message
-            ? result.message
-            : "Gagal mengambil data peserta."
-        );
-
-      }
-
-
-      /*
-       * Pastikan data berupa array.
-       */
-
-      if (
-        !Array.isArray(result.data)
-      ) {
-
-        throw new Error(
-          "Format data peserta tidak valid."
-        );
-
-      }
-
-
-      peserta =
-        result.data;
-
-
-      console.log(
-        "Jumlah peserta:",
-        peserta.length
-      );
-
-
-      /*
-       * Tampilkan data.
-       */
-
-      tampilkanNama(
-        peserta
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "GAGAL LOAD PESERTA:",
-        error
-      );
-
-
-      let pesan =
-        "Tidak dapat memuat daftar peserta.";
-
-
-      if (
-        error.name === "AbortError"
-      ) {
-
-        pesan =
-          "Koneksi ke server terlalu lama. Silakan coba lagi.";
-
-      } else if (
-        error.message
-      ) {
-
-        pesan =
-          error.message;
-
-      }
-
-
-      list.innerHTML = `
-
-        <div class="empty">
-
-          ❌ Gagal memuat peserta.
-
-          <br><br>
-
-          <small>
-            ${escapeHtml(pesan)}
-          </small>
-
-          <button
-            class="retry-btn"
-            onclick="loadPeserta()"
-          >
-            🔄 Coba Lagi
-          </button>
-
-        </div>
-
-      `;
-
-
-      showMessage(
-        "Gagal mengambil daftar peserta dari server.",
-        "error"
-      );
-
-    }
+    loadPeserta();
 
   }
+);
 
 
-  /* =========================================================
-     DISPLAY NAME
-  ========================================================= */
+/* =========================================================
+   LOAD PESERTA
+========================================================= */
 
-  function tampilkanNama(data) {
+async function loadPeserta() {
 
-    const list =
-      document.getElementById("nameList");
-
-
-    list.innerHTML = "";
-
-
-    if (
-      !data ||
-      data.length === 0
-    ) {
-
-      list.innerHTML =
-        '<div class="empty">Peserta tidak ditemukan.</div>';
-
-      return;
-
-    }
-
-
-    data.forEach(
-      function(item) {
-
-        const div =
-          document.createElement("div");
-
-
-        div.className =
-          "name-item";
-
-
-        /*
-         * Peserta yang sudah hadir
-         * tidak bisa dipilih lagi.
-         */
-
-        if (
-          item.sudahDatang
-        ) {
-
-          div.classList.add(
-            "disabled"
-          );
-
-        }
-
-
-        let status = "";
-
-
-        if (
-          item.sudahDatang
-        ) {
-
-          status = `
-
-            <div class="status">
-
-              ✓ Sudah hadir
-
-              ${
-                item.jamDatang
-                  ? "• " +
-                    escapeHtml(
-                      item.jamDatang
-                    )
-                  : ""
-              }
-
-            </div>
-
-          `;
-
-        }
-
-
-        div.innerHTML = `
-
-          <div>
-            ${escapeHtml(item.nama)}
-          </div>
-
-          ${status}
-
-        `;
-
-
-        if (
-          !item.sudahDatang
-        ) {
-
-          div.addEventListener(
-            "click",
-            function() {
-
-              pilihPeserta(item);
-
-            }
-          );
-
-        }
-
-
-        list.appendChild(div);
-
-      }
-    );
-
-  }
-
-
-  /* =========================================================
-     SEARCH
-  ========================================================= */
-
-  function filterNama() {
-
-    const keyword =
-      document
-        .getElementById("search")
-        .value
-        .toLowerCase()
-        .trim();
-
-
-    if (!keyword) {
-
-      tampilkanNama(
-        peserta
-      );
-
-      return;
-
-    }
-
-
-    const hasil =
-      peserta.filter(
-        function(item) {
-
-          return String(
-            item.nama || ""
-          )
-          .toLowerCase()
-          .includes(
-            keyword
-          );
-
-        }
-      );
-
-
-    tampilkanNama(
-      hasil
-    );
-
-  }
-
-
-  /* =========================================================
-     SELECT PARTICIPANT
-  ========================================================= */
-
-  function pilihPeserta(item) {
-
-    if (
-      !item ||
-      item.sudahDatang
-    ) {
-
-      return;
-
-    }
-
-
-    pesertaTerpilih =
-      item;
-
-    fotoBase64 =
-      null;
-
-
-    document
-      .getElementById("selectedName")
-      .textContent =
-      item.nama;
-
-
-    document
-      .getElementById("selectedBox")
-      .classList.add(
-        "show"
-      );
-
-
-    document
-      .getElementById("cameraSection")
-      .classList.add(
-        "show"
-      );
-
-
-    document
-      .getElementById("preview")
-      .classList.remove(
-        "show"
-      );
-
-
-    document
-      .getElementById("saveBtn")
-      .disabled =
-      true;
-
-
-    document
-      .getElementById("captureBtn")
-      .disabled =
-      false;
-
-
-    showMessage(
-      "Membuka kamera...",
-      "info"
+  const list =
+    document.getElementById(
+      "nameList"
     );
 
 
-    bukaKamera();
+  list.innerHTML =
+    '<div class="loading">⏳ Memuat daftar peserta...</div>';
 
 
-    setTimeout(
-      function() {
+  hideMessage();
 
-        const camera =
-          document.getElementById(
-            "cameraSection"
-          );
 
-        if (camera) {
+  try {
 
-          camera.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
+    const url =
+      API_URL +
+      "?action=daftarPeserta&_=" +
+      Date.now();
 
-        }
 
-      },
-      200
-    );
+    const controller =
+      new AbortController();
 
-  }
 
-
-  /* =========================================================
-     OPEN CAMERA
-  ========================================================= */
-
-  async function bukaKamera() {
-
-    hentikanKamera();
-
-
-    if (
-      !navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia
-    ) {
-
-      showMessage(
-        "Browser tidak mendukung akses kamera.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    try {
-
-      /*
-       * Percobaan pertama:
-       * kamera belakang.
-       */
-
-      try {
-
-        stream =
-          await navigator.mediaDevices
-            .getUserMedia({
-
-              video: {
-
-                facingMode: {
-                  exact: "environment"
-                }
-
-              },
-
-              audio: false
-
-            });
-
-
-      } catch (error) {
-
-        console.log(
-          "Kamera environment gagal:",
-          error
-        );
-
-
-        /*
-         * Fallback:
-         * kamera apa saja.
-         */
-
-        stream =
-          await navigator.mediaDevices
-            .getUserMedia({
-
-              video: true,
-
-              audio: false
-
-            });
-
-
-        /*
-         * Setelah permission diberikan,
-         * cari kamera belakang.
-         */
-
-        try {
-
-          const devices =
-            await navigator.mediaDevices
-              .enumerateDevices();
-
-
-          const cameras =
-            devices.filter(
-              function(device) {
-
-                return (
-                  device.kind ===
-                  "videoinput"
-                );
-
-              }
-            );
-
-
-          const rearCamera =
-            cameras.find(
-              function(camera) {
-
-                const label =
-                  (
-                    camera.label ||
-                    ""
-                  )
-                  .toLowerCase();
-
-
-                return (
-                  label.includes("back") ||
-                  label.includes("rear") ||
-                  label.includes("environment") ||
-                  label.includes("facing")
-                );
-
-              }
-            );
-
-
-          if (
-            rearCamera
-          ) {
-
-            hentikanKamera();
-
-
-            stream =
-              await navigator.mediaDevices
-                .getUserMedia({
-
-                  video: {
-
-                    deviceId: {
-                      exact:
-                        rearCamera.deviceId
-                    }
-
-                  },
-
-                  audio: false
-
-                });
-
-          }
-
-        } catch (deviceError) {
-
-          console.log(
-            "Gagal memilih kamera belakang:",
-            deviceError
-          );
-
-        }
-
-      }
-
-
-      const video =
-        document.getElementById(
-          "video"
-        );
-
-
-      video.srcObject =
-        stream;
-
-
-      await video.play();
-
-
-      hideMessage();
-
-
-    } catch (error) {
-
-      console.error(
-        "Camera error:",
-        error
-      );
-
-
-      showMessage(
-        "Kamera tidak dapat dibuka. Pastikan izin kamera sudah diberikan.",
-        "error"
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     TAKE PHOTO
-  ========================================================= */
-
-  function ambilFoto() {
-
-    if (!stream) {
-
-      showMessage(
-        "Kamera belum aktif.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    const video =
-      document.getElementById(
-        "video"
-      );
-
-
-    const canvas =
-      document.getElementById(
-        "canvas"
-      );
-
-
-    const context =
-      canvas.getContext(
-        "2d"
-      );
-
-
-    let width =
-      video.videoWidth;
-
-
-    let height =
-      video.videoHeight;
-
-
-    if (
-      !width ||
-      !height
-    ) {
-
-      showMessage(
-        "Kamera belum siap. Tunggu sebentar lalu coba lagi.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    /*
-     * Maksimum 1024 px.
-     * Supaya file tidak terlalu besar.
-     */
-
-    const MAX_SIZE =
-      1024;
-
-
-    if (
-      width > height
-    ) {
-
-      if (
-        width > MAX_SIZE
-      ) {
-
-        height =
-          Math.round(
-            height *
-            MAX_SIZE /
-            width
-          );
-
-        width =
-          MAX_SIZE;
-
-      }
-
-    } else {
-
-      if (
-        height > MAX_SIZE
-      ) {
-
-        width =
-          Math.round(
-            width *
-            MAX_SIZE /
-            height
-          );
-
-        height =
-          MAX_SIZE;
-
-      }
-
-    }
-
-
-    canvas.width =
-      width;
-
-    canvas.height =
-      height;
-
-
-    context.drawImage(
-      video,
-      0,
-      0,
-      width,
-      height
-    );
-
-
-    /*
-     * JPEG 65%.
-     */
-
-    fotoBase64 =
-      canvas.toDataURL(
-        "image/jpeg",
-        0.65
-      );
-
-
-    /*
-     * Preview.
-     */
-
-    const previewImage =
-      document.getElementById(
-        "previewImage"
-      );
-
-
-    previewImage.src =
-      fotoBase64;
-
-
-    document
-      .getElementById("preview")
-      .classList.add(
-        "show"
-      );
-
-
-    document
-      .getElementById("saveBtn")
-      .disabled =
-      false;
-
-
-    showMessage(
-      "✓ Foto berhasil diambil. Silakan simpan.",
-      "success"
-    );
-
-
-    /*
-     * Stop kamera supaya tidak
-     * terus menggunakan kamera.
-     */
-
-    hentikanKamera();
-
-
-    document
-      .getElementById("preview")
-      .scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-  }
-
-
-  /* =========================================================
-     SAVE PHOTO
-  ========================================================= */
-
-  async function simpanFoto() {
-
-    if (
-      !pesertaTerpilih
-    ) {
-
-      showMessage(
-        "Silakan pilih nama peserta.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    if (
-      !fotoBase64
-    ) {
-
-      showMessage(
-        "Silakan ambil foto terlebih dahulu.",
-        "error"
-      );
-
-      return;
-
-    }
-
-
-    const saveBtn =
-      document.getElementById(
-        "saveBtn"
-      );
-
-
-    const captureBtn =
-      document.getElementById(
-        "captureBtn"
-      );
-
-
-    saveBtn.disabled =
-      true;
-
-    captureBtn.disabled =
-      true;
-
-
-    saveBtn.textContent =
-      "⏳ Menyimpan...";
-
-
-    showMessage(
-      "Sedang menyimpan foto ke server. Jangan tutup halaman...",
-      "info"
-    );
-
-
-    try {
-
-      const data = {
-
-        action:
-          "simpanFotoDatang",
-
-        id:
-          pesertaTerpilih.id,
-
-        nama:
-          pesertaTerpilih.nama,
-
-        foto:
-          fotoBase64
-
-      };
-
-
-      console.log(
-        "Mengirim foto untuk:",
-        pesertaTerpilih.nama
-      );
-
-
-      /*
-       * text/plain sengaja dipakai
-       * agar tidak memicu preflight OPTIONS.
-       */
-
-      const response =
-        await fetch(
-          API_URL,
-          {
-
-            method: "POST",
-
-            mode: "cors",
-
-            headers: {
-
-              "Content-Type":
-                "text/plain;charset=utf-8"
-
-            },
-
-            body:
-              JSON.stringify(data)
-
-          }
-        );
-
-
-      if (
-        !response.ok
-      ) {
-
-        throw new Error(
-          "Server mengembalikan HTTP " +
-          response.status
-        );
-
-      }
-
-
-      const text =
-        await response.text();
-
-
-      console.log(
-        "Response upload:",
-        text
-      );
-
-
-      if (!text) {
-
-        throw new Error(
-          "Server tidak mengembalikan response."
-        );
-
-      }
-
-
-      let result;
-
-
-      try {
-
-        result =
-          JSON.parse(text);
-
-      } catch (error) {
-
-        throw new Error(
-          "Response upload tidak valid."
-        );
-
-      }
-
-
-      if (
-        !result.success
-      ) {
-
-        throw new Error(
-          result.message ||
-          "Gagal menyimpan foto."
-        );
-
-      }
-
-
-      /*
-       * BERHASIL
-       */
-
-      saveBtn.textContent =
-        "✓ Berhasil Disimpan";
-
-
-      showMessage(
-        "✓ Absensi berhasil disimpan untuk " +
-        pesertaTerpilih.nama,
-        "success"
-      );
-
-
-      /*
-       * Update data lokal.
-       */
-
-      const index =
-        peserta.findIndex(
-          function(item) {
-
-            return (
-              String(item.id) ===
-              String(
-                pesertaTerpilih.id
-              )
-            );
-
-          }
-        );
-
-
-      if (
-        index !== -1
-      ) {
-
-        peserta[index].sudahDatang =
-          true;
-
-        peserta[index].jamDatang =
-          result.waktu ||
-          result.jamDatang ||
-          "";
-
-      }
-
-
-      /*
-       * Tunggu sebentar lalu kembali
-       * ke daftar peserta.
-       */
-
+    const timeout =
       setTimeout(
         function() {
 
-          resetAbsensi();
+          controller.abort();
 
         },
-        1800
+        20000
       );
 
 
-    } catch (error) {
+    const response =
+      await fetch(
+        url,
+        {
 
-      console.error(
-        "UPLOAD ERROR:",
-        error
+          method: "GET",
+
+          mode: "cors",
+
+          cache: "no-store",
+
+          redirect: "follow",
+
+          signal:
+            controller.signal
+
+        }
       );
 
 
-      /*
-       * Jangan langsung reset.
-       * Foto tetap ada di preview
-       * supaya user bisa mencoba lagi.
-       */
-
-      saveBtn.disabled =
-        false;
-
-      captureBtn.disabled =
-        false;
-
-
-      saveBtn.textContent =
-        "💾 Simpan Kehadiran";
-
-
-      showMessage(
-        "❌ " +
-        (
-          error.message ||
-          "Gagal menyimpan foto."
-        ),
-        "error"
-      );
-
-    }
-
-  }
-
-
-  /* =========================================================
-     STOP CAMERA
-  ========================================================= */
-
-  function hentikanKamera() {
-
-    if (
-      stream
-    ) {
-
-      stream
-        .getTracks()
-        .forEach(
-          function(track) {
-
-            track.stop();
-
-          }
-        );
-
-
-      stream =
-        null;
-
-    }
-
-
-    const video =
-      document.getElementById(
-        "video"
-      );
+    clearTimeout(timeout);
 
 
     if (
-      video
+      !response.ok
     ) {
 
-      video.srcObject =
-        null;
+      throw new Error(
+        "Server mengembalikan HTTP " +
+        response.status
+      );
 
     }
 
-  }
+
+    const text =
+      await response.text();
 
 
-  /* =========================================================
-     RESET
-  ========================================================= */
+    if (!text) {
 
-  function resetAbsensi() {
-
-    hentikanKamera();
-
-
-    pesertaTerpilih =
-      null;
-
-    fotoBase64 =
-      null;
-
-
-    document
-      .getElementById(
-        "selectedName"
-      )
-      .textContent =
-      "";
-
-
-    document
-      .getElementById(
-        "search"
-      )
-      .value =
-      "";
-
-
-    document
-      .getElementById(
-        "selectedBox"
-      )
-      .classList.remove(
-        "show"
+      throw new Error(
+        "Response server kosong."
       );
 
+    }
 
-    document
-      .getElementById(
-        "cameraSection"
-      )
-      .classList.remove(
-        "show"
+
+    const result =
+      JSON.parse(text);
+
+
+    if (
+      !result ||
+      result.success !== true
+    ) {
+
+      throw new Error(
+        result.message ||
+        "Gagal mengambil data peserta."
       );
 
+    }
 
-    document
-      .getElementById(
-        "preview"
+
+    if (
+      !Array.isArray(
+        result.data
       )
-      .classList.remove(
-        "show"
+    ) {
+
+      throw new Error(
+        "Format data peserta tidak valid."
       );
 
-
-    document
-      .getElementById(
-        "saveBtn"
-      )
-      .disabled =
-      true;
+    }
 
 
-    document
-      .getElementById(
-        "saveBtn"
-      )
-      .textContent =
-      "💾 Simpan Kehadiran";
+    peserta =
+      result.data;
 
-
-    document
-      .getElementById(
-        "captureBtn"
-      )
-      .disabled =
-      false;
-
-
-    hideMessage();
-
-
-    /*
-     * Tampilkan data terbaru
-     * yang sudah di-update lokal.
-     */
 
     tampilkanNama(
       peserta
     );
 
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+  } catch (error) {
+
+    console.error(
+      "LOAD PESERTA ERROR:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        ❌ Gagal memuat peserta.
+
+        <br><br>
+
+        <small>
+          ${escapeHtml(
+            error.message ||
+            "Terjadi kesalahan."
+          )}
+        </small>
+
+        <button
+          class="retry-btn"
+          onclick="loadPeserta()"
+        >
+          🔄 Coba Lagi
+        </button>
+
+      </div>
+
+    `;
+
+
+    showMessage(
+      "Gagal mengambil daftar peserta.",
+      "error"
+    );
 
   }
 
+}
 
-  /* =========================================================
-     MESSAGE
-  ========================================================= */
 
-  function showMessage(
-    text,
-    type
+/* =========================================================
+   DISPLAY NAME
+========================================================= */
+
+function tampilkanNama(
+  data
+) {
+
+  const list =
+    document.getElementById(
+      "nameList"
+    );
+
+
+  list.innerHTML = "";
+
+
+  if (
+    !data ||
+    data.length === 0
   ) {
 
-    const message =
-      document.getElementById(
-        "message"
-      );
+    list.innerHTML =
+      '<div class="empty">Peserta belum ada.</div>';
 
-
-    message.textContent =
-      text;
-
-
-    message.className =
-      "message show " +
-      type;
+    return;
 
   }
 
 
-  function hideMessage() {
+  data.forEach(
+    function(item) {
 
-    const message =
-      document.getElementById(
-        "message"
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "name-item";
+
+
+      if (
+        item.sudahDatang
+      ) {
+
+        div.classList.add(
+          "disabled"
+        );
+
+      }
+
+
+      let status = "";
+
+
+      if (
+        item.sudahDatang
+      ) {
+
+        status = `
+
+          <div class="status">
+
+            ✓ Sudah hadir
+
+            ${
+              item.jamDatang
+                ? "• " +
+                  escapeHtml(
+                    item.jamDatang
+                  )
+                : ""
+            }
+
+          </div>
+
+        `;
+
+      }
+
+
+      div.innerHTML = `
+
+        <div>
+          ${escapeHtml(
+            item.nama
+          )}
+        </div>
+
+        ${status}
+
+      `;
+
+
+      if (
+        !item.sudahDatang
+      ) {
+
+        div.addEventListener(
+          "click",
+          function() {
+
+            pilihPeserta(
+              item
+            );
+
+          }
+        );
+
+      }
+
+
+      list.appendChild(
+        div
       );
-
-
-    message.className =
-      "message";
-
-  }
-
-
-  /* =========================================================
-     ESCAPE HTML
-  ========================================================= */
-
-  function escapeHtml(text) {
-
-    const div =
-      document.createElement(
-        "div"
-      );
-
-
-    div.textContent =
-      text == null
-        ? ""
-        : String(text);
-
-
-    return div.innerHTML;
-
-  }
-
-
-  /* =========================================================
-     STOP CAMERA WHEN LEAVING
-  ========================================================= */
-
-  window.addEventListener(
-    "beforeunload",
-    function() {
-
-      hentikanKamera();
 
     }
   );
 
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterNama() {
+
+  const keyword =
+    document
+      .getElementById(
+        "search"
+      )
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  if (!keyword) {
+
+    tampilkanNama(
+      peserta
+    );
+
+    return;
+
+  }
+
+
+  const hasil =
+    peserta.filter(
+      function(item) {
+
+        return String(
+          item.nama || ""
+        )
+        .toLowerCase()
+        .includes(
+          keyword
+        );
+
+      }
+    );
+
+
+  tampilkanNama(
+    hasil
+  );
+
+}
+
+
+/* =========================================================
+   TAMBAH PESERTA
+========================================================= */
+
+function handleAddEnter(
+  event
+) {
+
+  if (
+    event.key === "Enter"
+  ) {
+
+    event.preventDefault();
+
+    tambahPesertaBaru();
+
+  }
+
+}
+
+
+async function tambahPesertaBaru() {
+
+  const input =
+    document.getElementById(
+      "newParticipantName"
+    );
+
+
+  const button =
+    document.getElementById(
+      "addBtn"
+    );
+
+
+  const nama =
+    input.value.trim();
+
+
+  if (!nama) {
+
+    showMessage(
+      "Nama peserta belum diisi.",
+      "error"
+    );
+
+    input.focus();
+
+    return;
+
+  }
+
+
+  /*
+   * Cek duplikat dari data yang
+   * sudah ada di browser.
+   */
+
+  const duplicate =
+    peserta.some(
+      function(item) {
+
+        return (
+          String(item.nama)
+            .trim()
+            .toLowerCase() ===
+          nama.toLowerCase()
+        );
+
+      }
+    );
+
+
+  if (duplicate) {
+
+    showMessage(
+      "Nama peserta sudah ada di daftar.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "⏳ Menambahkan...";
+
+
+  showMessage(
+    "Sedang menambahkan peserta...",
+    "info"
+  );
+
+
+  try {
+
+    const data = {
+
+      action:
+        "tambahPeserta",
+
+      nama:
+        nama
+
+    };
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method: "POST",
+
+          mode: "cors",
+
+          headers: {
+
+            "Content-Type":
+              "text/plain;charset=utf-8"
+
+          },
+
+          body:
+            JSON.stringify(
+              data
+            )
+
+        }
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        "Server mengembalikan HTTP " +
+        response.status
+      );
+
+    }
+
+
+    const text =
+      await response.text();
+
+
+    if (!text) {
+
+      throw new Error(
+        "Response server kosong."
+      );
+
+    }
+
+
+    const result =
+      JSON.parse(text);
+
+
+    if (
+      !result.success
+    ) {
+
+      throw new Error(
+        result.message ||
+        "Gagal menambahkan peserta."
+      );
+
+    }
+
+
+    /*
+     * Masukkan peserta baru
+     * ke data lokal.
+     */
+
+    peserta.push({
+
+      id:
+        String(result.id),
+
+      nama:
+        result.nama || nama,
+
+      sudahDatang:
+        false,
+
+      jamDatang:
+        ""
+
+    });
+
+
+    /*
+     * Urutkan berdasarkan ID.
+     */
+
+    peserta.sort(
+      function(a, b) {
+
+        return (
+          Number(a.id) -
+          Number(b.id)
+        );
+
+      }
+    );
+
+
+    /*
+     * Kosongkan input.
+     */
+
+    input.value =
+      "";
+
+
+    /*
+     * Refresh daftar.
+     */
+
+    filterNama();
+
+
+    showMessage(
+      "✓ Peserta " +
+      (result.nama || nama) +
+      " berhasil ditambahkan.",
+      "success"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "TAMBAH PESERTA ERROR:",
+      error
+    );
+
+
+    showMessage(
+      "❌ " +
+      (
+        error.message ||
+        "Gagal menambahkan peserta."
+      ),
+      "error"
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "+ Tambah Peserta";
+
+  }
+
+}
+
+
+/* =========================================================
+   SELECT PARTICIPANT
+========================================================= */
+
+function pilihPeserta(
+  item
+) {
+
+  if (
+    !item ||
+    item.sudahDatang
+  ) {
+
+    return;
+
+  }
+
+
+  pesertaTerpilih =
+    item;
+
+
+  fotoBase64 =
+    null;
+
+
+  document
+    .getElementById(
+      "selectedName"
+    )
+    .textContent =
+    item.nama;
+
+
+  document
+    .getElementById(
+      "selectedBox"
+    )
+    .classList.add(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "cameraSection"
+    )
+    .classList.add(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "preview"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "saveBtn"
+    )
+    .disabled =
+    true;
+
+
+  document
+    .getElementById(
+      "captureBtn"
+    )
+    .disabled =
+    false;
+
+
+  showMessage(
+    "Membuka kamera...",
+    "info"
+  );
+
+
+  bukaKamera();
+
+
+  setTimeout(
+    function() {
+
+      document
+        .getElementById(
+          "cameraSection"
+        )
+        .scrollIntoView({
+
+          behavior:
+            "smooth",
+
+          block:
+            "start"
+
+        });
+
+    },
+    200
+  );
+
+}
+
+
+/* =========================================================
+   OPEN CAMERA
+========================================================= */
+
+async function bukaKamera() {
+
+  hentikanKamera();
+
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    showMessage(
+      "Browser tidak mendukung kamera.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    /*
+     * Kamera belakang.
+     */
+
+    try {
+
+      stream =
+        await navigator.mediaDevices
+          .getUserMedia({
+
+            video: {
+
+              facingMode: {
+                exact:
+                  "environment"
+              }
+
+            },
+
+            audio: false
+
+          });
+
+
+    } catch (error) {
+
+      console.log(
+        "Environment camera gagal."
+      );
+
+
+      /*
+       * Fallback kamera biasa.
+       */
+
+      stream =
+        await navigator.mediaDevices
+          .getUserMedia({
+
+            video: true,
+
+            audio: false
+
+          });
+
+
+      /*
+       * Cari kamera belakang.
+       */
+
+      try {
+
+        const devices =
+          await navigator.mediaDevices
+            .enumerateDevices();
+
+
+        const cameras =
+          devices.filter(
+            function(device) {
+
+              return (
+                device.kind ===
+                "videoinput"
+              );
+
+            }
+          );
+
+
+        const rearCamera =
+          cameras.find(
+            function(camera) {
+
+              const label =
+                (
+                  camera.label ||
+                  ""
+                )
+                .toLowerCase();
+
+
+              return (
+
+                label.includes(
+                  "back"
+                ) ||
+
+                label.includes(
+                  "rear"
+                ) ||
+
+                label.includes(
+                  "environment"
+                )
+
+              );
+
+            }
+          );
+
+
+        if (
+          rearCamera
+        ) {
+
+          hentikanKamera();
+
+
+          stream =
+            await navigator.mediaDevices
+              .getUserMedia({
+
+                video: {
+
+                  deviceId: {
+
+                    exact:
+                      rearCamera.deviceId
+
+                  }
+
+                },
+
+                audio: false
+
+              });
+
+        }
+
+      } catch (deviceError) {
+
+        console.log(
+          deviceError
+        );
+
+      }
+
+    }
+
+
+    const video =
+      document.getElementById(
+        "video"
+      );
+
+
+    video.srcObject =
+      stream;
+
+
+    await video.play();
+
+
+    hideMessage();
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showMessage(
+      "Kamera tidak dapat dibuka. Pastikan izin kamera diberikan.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   TAKE PHOTO
+========================================================= */
+
+function ambilFoto() {
+
+  if (!stream) {
+
+    showMessage(
+      "Kamera belum aktif.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const video =
+    document.getElementById(
+      "video"
+    );
+
+
+  const canvas =
+    document.getElementById(
+      "canvas"
+    );
+
+
+  const context =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  let width =
+    video.videoWidth;
+
+
+  let height =
+    video.videoHeight;
+
+
+  if (
+    !width ||
+    !height
+  ) {
+
+    showMessage(
+      "Kamera belum siap. Tunggu sebentar.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Maksimal 1024 px.
+   */
+
+  const MAX_SIZE =
+    1024;
+
+
+  if (
+    width > height
+  ) {
+
+    if (
+      width > MAX_SIZE
+    ) {
+
+      height =
+        Math.round(
+          height *
+          MAX_SIZE /
+          width
+        );
+
+      width =
+        MAX_SIZE;
+
+    }
+
+  } else {
+
+    if (
+      height > MAX_SIZE
+    ) {
+
+      width =
+        Math.round(
+          width *
+          MAX_SIZE /
+          height
+        );
+
+      height =
+        MAX_SIZE;
+
+    }
+
+  }
+
+
+  canvas.width =
+    width;
+
+  canvas.height =
+    height;
+
+
+  context.drawImage(
+    video,
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  fotoBase64 =
+    canvas.toDataURL(
+      "image/jpeg",
+      0.65
+    );
+
+
+  document
+    .getElementById(
+      "previewImage"
+    )
+    .src =
+    fotoBase64;
+
+
+  document
+    .getElementById(
+      "preview"
+    )
+    .classList.add(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "saveBtn"
+    )
+    .disabled =
+    false;
+
+
+  showMessage(
+    "✓ Foto berhasil diambil. Silakan simpan.",
+    "success"
+  );
+
+
+  hentikanKamera();
+
+
+  document
+    .getElementById(
+      "preview"
+    )
+    .scrollIntoView({
+
+      behavior:
+        "smooth",
+
+      block:
+        "start"
+
+    });
+
+}
+
+
+/* =========================================================
+   SAVE PHOTO
+========================================================= */
+
+async function simpanFoto() {
+
+  if (
+    !pesertaTerpilih
+  ) {
+
+    showMessage(
+      "Silakan pilih nama peserta.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !fotoBase64
+  ) {
+
+    showMessage(
+      "Silakan ambil foto terlebih dahulu.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const saveBtn =
+    document.getElementById(
+      "saveBtn"
+    );
+
+
+  const captureBtn =
+    document.getElementById(
+      "captureBtn"
+    );
+
+
+  saveBtn.disabled =
+    true;
+
+  captureBtn.disabled =
+    true;
+
+
+  saveBtn.textContent =
+    "⏳ Menyimpan...";
+
+
+  showMessage(
+    "Sedang menyimpan foto ke server...",
+    "info"
+  );
+
+
+  try {
+
+    const data = {
+
+      action:
+        "simpanFotoDatang",
+
+      id:
+        pesertaTerpilih.id,
+
+      nama:
+        pesertaTerpilih.nama,
+
+      foto:
+        fotoBase64
+
+    };
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method: "POST",
+
+          mode: "cors",
+
+          headers: {
+
+            "Content-Type":
+              "text/plain;charset=utf-8"
+
+          },
+
+          body:
+            JSON.stringify(
+              data
+            )
+
+        }
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        "Server mengembalikan HTTP " +
+        response.status
+      );
+
+    }
+
+
+    const text =
+      await response.text();
+
+
+    if (!text) {
+
+      throw new Error(
+        "Response server kosong."
+      );
+
+    }
+
+
+    const result =
+      JSON.parse(text);
+
+
+    if (
+      !result.success
+    ) {
+
+      throw new Error(
+        result.message ||
+        "Gagal menyimpan foto."
+      );
+
+    }
+
+
+    /*
+     * BERHASIL
+     */
+
+    saveBtn.textContent =
+      "✓ Berhasil Disimpan";
+
+
+    showMessage(
+      "✓ Absensi berhasil disimpan untuk " +
+      pesertaTerpilih.nama,
+      "success"
+    );
+
+
+    /*
+     * Update status lokal.
+     */
+
+    const index =
+      peserta.findIndex(
+        function(item) {
+
+          return (
+            String(item.id) ===
+            String(
+              pesertaTerpilih.id
+            )
+          );
+
+        }
+      );
+
+
+    if (
+      index !== -1
+    ) {
+
+      peserta[index].sudahDatang =
+        true;
+
+      peserta[index].jamDatang =
+        result.waktu ||
+        result.jamDatang ||
+        "";
+
+    }
+
+
+    setTimeout(
+      function() {
+
+        resetAbsensi();
+
+      },
+      1800
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "UPLOAD ERROR:",
+      error
+    );
+
+
+    saveBtn.disabled =
+      false;
+
+    captureBtn.disabled =
+      false;
+
+
+    saveBtn.textContent =
+      "💾 Simpan Kehadiran";
+
+
+    showMessage(
+      "❌ " +
+      (
+        error.message ||
+        "Gagal menyimpan foto."
+      ),
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STOP CAMERA
+========================================================= */
+
+function hentikanKamera() {
+
+  if (
+    stream
+  ) {
+
+    stream
+      .getTracks()
+      .forEach(
+        function(track) {
+
+          track.stop();
+
+        }
+      );
+
+
+    stream =
+      null;
+
+  }
+
+
+  const video =
+    document.getElementById(
+      "video"
+    );
+
+
+  if (
+    video
+  ) {
+
+    video.srcObject =
+      null;
+
+  }
+
+}
+
+
+/* =========================================================
+   RESET ABSENSI
+========================================================= */
+
+function resetAbsensi() {
+
+  hentikanKamera();
+
+
+  pesertaTerpilih =
+    null;
+
+
+  fotoBase64 =
+    null;
+
+
+  document
+    .getElementById(
+      "selectedName"
+    )
+    .textContent =
+    "";
+
+
+  document
+    .getElementById(
+      "search"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "selectedBox"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "cameraSection"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "preview"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "saveBtn"
+    )
+    .disabled =
+    true;
+
+
+  document
+    .getElementById(
+      "saveBtn"
+    )
+    .textContent =
+    "💾 Simpan Kehadiran";
+
+
+  document
+    .getElementById(
+      "captureBtn"
+    )
+    .disabled =
+    false;
+
+
+  hideMessage();
+
+
+  tampilkanNama(
+    peserta
+  );
+
+
+  window.scrollTo({
+
+    top: 0,
+
+    behavior:
+      "smooth"
+
+  });
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+  text,
+  type
+) {
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  message.textContent =
+    text;
+
+
+  message.className =
+    "message show " +
+    type;
+
+}
+
+
+function hideMessage() {
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  message.className =
+    "message";
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+  text
+) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.textContent =
+    text == null
+      ? ""
+      : String(text);
+
+
+  return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   STOP CAMERA WHEN LEAVING
+========================================================= */
+
+window.addEventListener(
+  "beforeunload",
+  function() {
+
+    hentikanKamera();
+
+  }
+);
+
 </script>
 
-</body>
-</html>
 
+</body>
+
+</html>
