@@ -181,7 +181,6 @@
 
     video {
       width: 100%;
-      max-width: 100%;
       min-height: 250px;
       border-radius: 10px;
       background: #000;
@@ -247,6 +246,11 @@
       color: #222;
     }
 
+    .btn-retry {
+      background: #4a73e8;
+      color: #fff;
+    }
+
     /* MESSAGE */
 
     .message {
@@ -290,7 +294,9 @@
   </div>
 
 
-  <!-- SEARCH -->
+  <!-- ==================================================
+       SEARCH
+       ================================================== -->
 
   <label for="search">
     Cari Nama Peserta
@@ -305,7 +311,9 @@
   >
 
 
-  <!-- DAFTAR PESERTA -->
+  <!-- ==================================================
+       DAFTAR PESERTA
+       ================================================== -->
 
   <div
     id="nameList"
@@ -319,11 +327,13 @@
   </div>
 
 
-  <!-- TAMBAH NAMA -->
+  <!-- ==================================================
+       TAMBAH NAMA
+       ================================================== -->
 
   <div
     id="addBox"
-    class="add-box"
+    class="add-box show"
   >
 
     <div class="add-title">
@@ -331,8 +341,8 @@
     </div>
 
     <div class="add-description">
-      Kalau peserta belum ada di daftar,
-      kamu bisa menambahkan nama baru.
+      Ketik nama di kolom pencarian,
+      lalu tambahkan sebagai peserta baru.
     </div>
 
     <button
@@ -346,7 +356,9 @@
   </div>
 
 
-  <!-- NAMA TERPILIH -->
+  <!-- ==================================================
+       NAMA TERPILIH
+       ================================================== -->
 
   <div
     id="selectedBox"
@@ -365,7 +377,9 @@
   </div>
 
 
-  <!-- CAMERA -->
+  <!-- ==================================================
+       CAMERA
+       ================================================== -->
 
   <div
     id="cameraSection"
@@ -377,7 +391,7 @@
     </label>
 
     <div class="camera-info">
-      📷 Kamera belakang • Resolusi tinggi
+      📷 Kamera belakang • HD
     </div>
 
     <video
@@ -390,8 +404,6 @@
       id="canvas"
     ></canvas>
 
-
-    <!-- AMBIL FOTO -->
 
     <button
       type="button"
@@ -457,17 +469,17 @@
 <script>
 
 
-// =========================================================
+// ========================================================
 // CONFIG
-// =========================================================
+// ========================================================
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbxbdqh0t_tE8JovVB9tYK7ya1RtaiQTrc5CI2zlSFj0GG3HJXyQR4ot1wRWibAIJTI0/exec";
+  "https://script.google.com/macros/s/AKfycbxbdqh0t_tE8JovVB9tYK7ya1RtaiQTrc5CI2zlSFj00G3HJXyQR4ot1wRWibAIJTI0/exec";
 
 
-// =========================================================
+// ========================================================
 // VARIABLES
-// =========================================================
+// ========================================================
 
 let peserta = [];
 
@@ -478,9 +490,9 @@ let fotoBase64 = null;
 let stream = null;
 
 
-// =========================================================
+// ========================================================
 // LOAD PESERTA
-// =========================================================
+// ========================================================
 
 window.onload = function() {
 
@@ -498,37 +510,33 @@ async function loadPeserta() {
 
 
   list.innerHTML =
-    '<div class="loading">Memuat daftar peserta...</div>';
+    '<div class="loading">Memuat peserta...</div>';
 
 
   try {
 
-    const response =
-      await fetch(
-        API_URL +
-        "?action=daftarPeserta"
-      );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        "HTTP error " +
-        response.status
-      );
-
-    }
-
-
     const result =
-      await response.json();
+      await requestWithRetry(
+
+        API_URL +
+        "?action=daftarPeserta",
+
+        {
+          method: "GET"
+        },
+
+        3
+
+      );
 
 
-    if (!result.success) {
+    if (
+      !result.success
+    ) {
 
       throw new Error(
         result.message ||
-        "Gagal mengambil data peserta."
+        "Gagal mengambil daftar peserta."
       );
 
     }
@@ -549,15 +557,26 @@ async function loadPeserta() {
 
 
     list.innerHTML = `
+
       <div class="empty">
-        Tidak dapat memuat daftar peserta.<br>
-        Silakan refresh halaman.
+
+        Gagal memuat peserta.<br><br>
+
+        <button
+          type="button"
+          class="btn-retry"
+          onclick="loadPeserta()"
+        >
+          🔄 Coba Lagi
+        </button>
+
       </div>
+
     `;
 
 
     showMessage(
-      "Tidak dapat terhubung ke Apps Script.",
+      "Koneksi ke server bermasalah. Silakan coba lagi.",
       "error"
     );
 
@@ -566,11 +585,145 @@ async function loadPeserta() {
 }
 
 
-// =========================================================
-// TAMPILKAN NAMA
-// =========================================================
+// ========================================================
+// REQUEST DENGAN RETRY
+// ========================================================
 
-function tampilkanNama(data) {
+async function requestWithRetry(
+  url,
+  options,
+  maxRetry
+) {
+
+  let lastError;
+
+
+  for (
+    let attempt = 1;
+    attempt <= maxRetry;
+    attempt++
+  ) {
+
+    try {
+
+      const controller =
+        new AbortController();
+
+
+      const timeout =
+        setTimeout(
+          function() {
+
+            controller.abort();
+
+          },
+          30000
+        );
+
+
+      const response =
+        await fetch(
+
+          url,
+
+          {
+
+            ...options,
+
+            signal:
+              controller.signal
+
+          }
+
+        );
+
+
+      clearTimeout(
+        timeout
+      );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          "Server mengembalikan HTTP " +
+          response.status
+        );
+
+      }
+
+
+      const result =
+        await response.json();
+
+
+      return result;
+
+
+    } catch (error) {
+
+      lastError =
+        error;
+
+
+      console.log(
+        "Percobaan " +
+        attempt +
+        " gagal:",
+        error
+      );
+
+
+      if (
+        attempt <
+        maxRetry
+      ) {
+
+        await sleep(
+          800 * attempt
+        );
+
+      }
+
+    }
+
+  }
+
+
+  throw lastError;
+
+}
+
+
+// ========================================================
+// SLEEP
+// ========================================================
+
+function sleep(
+  ms
+) {
+
+  return new Promise(
+    function(resolve) {
+
+      setTimeout(
+        resolve,
+        ms
+      );
+
+    }
+  );
+
+}
+
+
+// ========================================================
+// TAMPILKAN NAMA
+// ========================================================
+
+function tampilkanNama(
+  data
+) {
 
   const list =
     document.getElementById(
@@ -593,9 +746,11 @@ function tampilkanNama(data) {
   ) {
 
     list.innerHTML = `
+
       <div class="empty">
         Nama tidak ditemukan.
       </div>
+
     `;
 
   }
@@ -638,8 +793,11 @@ function tampilkanNama(data) {
         ) {
 
           status = `
+
             <div class="status">
+
               ✓ Sudah hadir
+
               ${
                 item.jamDatang
                   ? "• " +
@@ -650,13 +808,16 @@ function tampilkanNama(data) {
                     )
                   : ""
               }
+
             </div>
+
           `;
 
         }
 
 
         div.innerHTML = `
+
           <div>
             ${escapeHtml(
               item.nama
@@ -664,6 +825,7 @@ function tampilkanNama(data) {
           </div>
 
           ${status}
+
         `;
 
 
@@ -693,7 +855,8 @@ function tampilkanNama(data) {
   }
 
 
-  // TOMBOL TAMBAH SELALU MUNCUL
+  // Selalu tampilkan tombol
+  // tambah nama
 
   addBox.classList.add(
     "show"
@@ -707,8 +870,8 @@ function tampilkanNama(data) {
     </div>
 
     <div class="add-description">
-      Kalau peserta belum ada di daftar,
-      kamu bisa menambahkan nama baru.
+      Ketik nama di kolom pencarian,
+      lalu tambahkan sebagai peserta baru.
     </div>
 
     <button
@@ -724,9 +887,9 @@ function tampilkanNama(data) {
 }
 
 
-// =========================================================
-// SEARCH
-// =========================================================
+// ========================================================
+// FILTER NAMA
+// ========================================================
 
 function filterNama() {
 
@@ -774,9 +937,9 @@ function filterNama() {
 }
 
 
-// =========================================================
-// TAMPILKAN FORM TAMBAH
-// =========================================================
+// ========================================================
+// FORM TAMBAH NAMA
+// ========================================================
 
 function tampilkanFormTambah() {
 
@@ -806,6 +969,36 @@ function tampilkanFormTambah() {
   }
 
 
+  // Cek apakah sudah ada
+
+  const sudahAda =
+    peserta.some(
+      function(item) {
+
+        return String(
+          item.nama
+        )
+          .trim()
+          .toLowerCase() ===
+          nama.toLowerCase();
+
+      }
+    );
+
+
+  if (sudahAda) {
+
+    showMessage(
+      "Nama tersebut sudah ada di daftar.",
+      "error"
+    );
+
+
+    return;
+
+  }
+
+
   const lanjut =
     confirm(
       'Tambahkan peserta dengan nama "' +
@@ -828,9 +1021,9 @@ function tampilkanFormTambah() {
 }
 
 
-// =========================================================
-// TAMBAH PESERTA BARU
-// =========================================================
+// ========================================================
+// TAMBAH PESERTA
+// ========================================================
 
 async function tambahPesertaBaru(
   nama
@@ -857,8 +1050,8 @@ async function tambahPesertaBaru(
 
   try {
 
-    const response =
-      await fetch(
+    const result =
+      await requestWithRetry(
 
         API_URL,
 
@@ -885,23 +1078,11 @@ async function tambahPesertaBaru(
 
             })
 
-        }
+        },
+
+        3
 
       );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        "HTTP error " +
-        response.status
-      );
-
-    }
-
-
-    const result =
-      await response.json();
 
 
     if (
@@ -961,7 +1142,9 @@ async function tambahPesertaBaru(
         "selectedBox"
       )
       .classList
-      .add("show");
+      .add(
+        "show"
+      );
 
 
     document
@@ -969,7 +1152,9 @@ async function tambahPesertaBaru(
         "cameraSection"
       )
       .classList
-      .add("show");
+      .add(
+        "show"
+      );
 
 
     document
@@ -977,7 +1162,9 @@ async function tambahPesertaBaru(
         "preview"
       )
       .classList
-      .remove("show");
+      .remove(
+        "show"
+      );
 
 
     document
@@ -1010,7 +1197,7 @@ async function tambahPesertaBaru(
 
 
     showMessage(
-      "Nama berhasil ditambahkan. Silakan ambil foto.",
+      "Nama berhasil ditambahkan. Membuka kamera...",
       "success"
     );
 
@@ -1018,19 +1205,7 @@ async function tambahPesertaBaru(
     await bukaKamera();
 
 
-    window.scrollTo({
-
-      top:
-        document
-          .getElementById(
-            "cameraSection"
-          )
-          .offsetTop - 20,
-
-      behavior:
-        "smooth"
-
-    });
+    scrollToCamera();
 
 
   } catch (error) {
@@ -1051,7 +1226,8 @@ async function tambahPesertaBaru(
 
       <div class="add-description">
         ${escapeHtml(
-          error.message
+          error.message ||
+          "Terjadi kesalahan."
         )}
       </div>
 
@@ -1070,9 +1246,9 @@ async function tambahPesertaBaru(
 }
 
 
-// =========================================================
+// ========================================================
 // PILIH PESERTA
-// =========================================================
+// ========================================================
 
 async function pilihPeserta(
   item
@@ -1111,7 +1287,9 @@ async function pilihPeserta(
       "selectedBox"
     )
     .classList
-    .add("show");
+    .add(
+      "show"
+    );
 
 
   document
@@ -1119,7 +1297,9 @@ async function pilihPeserta(
       "cameraSection"
     )
     .classList
-    .add("show");
+    .add(
+      "show"
+    );
 
 
   document
@@ -1127,7 +1307,9 @@ async function pilihPeserta(
       "preview"
     )
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
 
 
   document
@@ -1149,14 +1331,27 @@ async function pilihPeserta(
   await bukaKamera();
 
 
+  scrollToCamera();
+
+}
+
+
+// ========================================================
+// SCROLL KE CAMERA
+// ========================================================
+
+function scrollToCamera() {
+
+  const camera =
+    document.getElementById(
+      "cameraSection"
+    );
+
+
   window.scrollTo({
 
     top:
-      document
-        .getElementById(
-          "cameraSection"
-        )
-        .offsetTop - 20,
+      camera.offsetTop - 20,
 
     behavior:
       "smooth"
@@ -1166,9 +1361,9 @@ async function pilihPeserta(
 }
 
 
-// =========================================================
-// KAMERA BELAKANG RESOLUSI TINGGI
-// =========================================================
+// ========================================================
+// KAMERA BELAKANG
+// ========================================================
 
 async function bukaKamera() {
 
@@ -1177,11 +1372,12 @@ async function bukaKamera() {
 
   if (
     !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
+    !navigator.mediaDevices
+      .getUserMedia
   ) {
 
     showMessage(
-      "Browser tidak mendukung akses kamera.",
+      "Browser tidak mendukung kamera.",
       "error"
     );
 
@@ -1196,11 +1392,8 @@ async function bukaKamera() {
     /*
      * Kamera belakang.
      *
-     * exact environment =
-     * harus kamera belakang.
-     *
-     * ideal 1920x1080 =
-     * meminta resolusi tinggi.
+     * Resolusi yang diminta:
+     * 1920 x 1080
      */
 
     stream =
@@ -1210,20 +1403,30 @@ async function bukaKamera() {
           video: {
 
             facingMode: {
-              exact: "environment"
+
+              exact:
+                "environment"
+
             },
 
             width: {
-              ideal: 1920
+
+              ideal:
+                1920
+
             },
 
             height: {
-              ideal: 1080
+
+              ideal:
+                1080
+
             }
 
           },
 
-          audio: false
+          audio:
+            false
 
         });
 
@@ -1241,8 +1444,6 @@ async function bukaKamera() {
     await video.play();
 
 
-    // Cek setting kamera
-
     const track =
       stream
         .getVideoTracks()[0];
@@ -1259,15 +1460,12 @@ async function bukaKamera() {
 
 
     console.log(
-      "Camera resolution:",
+      "Resolution:",
       settings.width,
       "x",
       settings.height
     );
 
-
-    // Kalau browser memberikan
-    // facingMode dan ternyata bukan belakang
 
     if (
       settings.facingMode &&
@@ -1298,7 +1496,7 @@ async function bukaKamera() {
   } catch (error) {
 
     console.error(
-      "Kamera belakang gagal:",
+      "Camera error:",
       error
     );
 
@@ -1319,9 +1517,9 @@ async function bukaKamera() {
 }
 
 
-// =========================================================
+// ========================================================
 // AMBIL FOTO
-// =========================================================
+// ========================================================
 
 function ambilFoto() {
 
@@ -1357,11 +1555,10 @@ function ambilFoto() {
 
 
   /*
-   * Maksimal ukuran foto.
+   * Maksimal 1600 px.
    *
-   * 1600 px cukup tajam
-   * untuk dokumentasi/absensi
-   * tanpa membuat file terlalu besar.
+   * Lebih tajam daripada
+   * versi sebelumnya.
    */
 
   const MAX_SIZE =
@@ -1392,9 +1589,9 @@ function ambilFoto() {
   }
 
 
-  // ===================================================
+  // ======================================================
   // RESIZE
-  // ===================================================
+  // ======================================================
 
   if (
     width > height
@@ -1451,9 +1648,9 @@ function ambilFoto() {
     height;
 
 
-  // ===================================================
-  // AMBIL FOTO
-  // ===================================================
+  // ======================================================
+  // DRAW FOTO
+  // ======================================================
 
   context.drawImage(
 
@@ -1468,26 +1665,23 @@ function ambilFoto() {
   );
 
 
-  // ===================================================
-  // KOMPRES JPEG
-  // ===================================================
-
-  /*
-   * Quality 0.75 =
-   * kualitas lebih bagus
-   * daripada sebelumnya 0.55.
-   */
+  // ======================================================
+  // JPEG QUALITY
+  // ======================================================
 
   fotoBase64 =
     canvas.toDataURL(
+
       "image/jpeg",
+
       0.75
+
     );
 
 
-  // ===================================================
+  // ======================================================
   // PREVIEW
-  // ===================================================
+  // ======================================================
 
   document
     .getElementById(
@@ -1502,7 +1696,9 @@ function ambilFoto() {
       "preview"
     )
     .classList
-    .add("show");
+    .add(
+      "show"
+    );
 
 
   document
@@ -1519,7 +1715,7 @@ function ambilFoto() {
   );
 
 
-  // Matikan kamera setelah foto
+  // Matikan kamera
 
   hentikanKamera();
 
@@ -1541,16 +1737,16 @@ function ambilFoto() {
 }
 
 
-// =========================================================
+// ========================================================
 // SIMPAN FOTO
-// =========================================================
+// ========================================================
 
 async function simpanFoto() {
 
   if (!pesertaTerpilih) {
 
     showMessage(
-      "Silakan pilih nama peserta.",
+      "Silakan pilih peserta.",
       "error"
     );
 
@@ -1595,8 +1791,8 @@ async function simpanFoto() {
 
   try {
 
-    const response =
-      await fetch(
+    const result =
+      await requestWithRetry(
 
         API_URL,
 
@@ -1629,23 +1825,11 @@ async function simpanFoto() {
 
             })
 
-        }
+        },
+
+        3
 
       );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        "HTTP error " +
-        response.status
-      );
-
-    }
-
-
-    const result =
-      await response.json();
 
 
     if (
@@ -1654,11 +1838,15 @@ async function simpanFoto() {
 
       throw new Error(
         result.message ||
-        "Gagal menyimpan foto."
+        "Gagal menyimpan absensi."
       );
 
     }
 
+
+    // ==================================================
+    // BERHASIL
+    // ==================================================
 
     saveBtn.textContent =
       "✓ Berhasil Disimpan";
@@ -1674,7 +1862,9 @@ async function simpanFoto() {
     );
 
 
-    // UPDATE DATA LOKAL
+    // ==================================================
+    // UPDATE LOKAL
+    // ==================================================
 
     const index =
       peserta.findIndex(
@@ -1682,7 +1872,8 @@ async function simpanFoto() {
 
           return String(
             item.id
-          ) === String(
+          ) ===
+          String(
             pesertaTerpilih.id
           );
 
@@ -1696,16 +1887,20 @@ async function simpanFoto() {
 
       peserta[index]
         .sudahDatang =
-        true;
+          true;
 
 
       peserta[index]
         .jamDatang =
-        result.waktu ||
-        "";
+          result.waktu ||
+          "";
 
     }
 
+
+    // ==================================================
+    // RESET
+    // ==================================================
 
     setTimeout(
 
@@ -1736,7 +1931,7 @@ async function simpanFoto() {
     showMessage(
 
       error.message ||
-      "Gagal menyimpan foto. Silakan coba lagi.",
+      "Gagal menyimpan foto.",
 
       "error"
 
@@ -1747,9 +1942,9 @@ async function simpanFoto() {
 }
 
 
-// =========================================================
+// ========================================================
 // STOP CAMERA
-// =========================================================
+// ========================================================
 
 function hentikanKamera() {
 
@@ -1788,9 +1983,9 @@ function hentikanKamera() {
 }
 
 
-// =========================================================
+// ========================================================
 // RESET
-// =========================================================
+// ========================================================
 
 function resetAbsensi() {
 
@@ -1826,7 +2021,9 @@ function resetAbsensi() {
       "selectedBox"
     )
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
 
 
   document
@@ -1834,7 +2031,9 @@ function resetAbsensi() {
       "cameraSection"
     )
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
 
 
   document
@@ -1842,7 +2041,9 @@ function resetAbsensi() {
       "preview"
     )
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
 
 
   document
@@ -1889,9 +2090,9 @@ function resetAbsensi() {
 }
 
 
-// =========================================================
+// ========================================================
 // MESSAGE
-// =========================================================
+// ========================================================
 
 function showMessage(
   text,
@@ -1929,9 +2130,9 @@ function hideMessage() {
 }
 
 
-// =========================================================
+// ========================================================
 // ESCAPE HTML
-// =========================================================
+// ========================================================
 
 function escapeHtml(
   text
@@ -1954,9 +2155,9 @@ function escapeHtml(
 }
 
 
-// =========================================================
-// STOP CAMERA WHEN LEAVING
-// =========================================================
+// ========================================================
+// STOP CAMERA
+// ========================================================
 
 window.addEventListener(
 
