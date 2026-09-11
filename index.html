@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 
@@ -11,10 +12,6 @@
 
   <title>Absensi Acara</title>
 
-  <script
-    src="https://unpkg.com/html5-qrcode"
-    type="text/javascript">
-  </script>
 
   <style>
 
@@ -22,12 +19,14 @@
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
       padding: 20px;
       font-family: Arial, sans-serif;
       background: #f5f5f5;
     }
+
 
     .container {
       max-width: 500px;
@@ -37,23 +36,84 @@
       border-radius: 16px;
     }
 
+
     h1 {
       text-align: center;
       margin-top: 0;
     }
 
+
+    /* ==========================================
+       PILIH MODE
+    ========================================== */
+
     #pilihMode {
       text-align: center;
     }
+
 
     #pilihMode p {
       margin-bottom: 20px;
     }
 
-    #reader {
-      width: 100%;
-      margin-top: 20px;
+
+    /* ==========================================
+       SEARCH NAMA
+    ========================================== */
+
+    #pilihPeserta {
+      display: none;
     }
+
+
+    #searchNama {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      outline: none;
+    }
+
+
+    #searchNama:focus {
+      border-color: #555;
+    }
+
+
+    #daftarNama {
+      display: none;
+      max-height: 260px;
+      overflow-y: auto;
+      margin-top: 8px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: white;
+      text-align: left;
+    }
+
+
+    .nama-item {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+
+    .nama-item:hover {
+      background: #f3f3f3;
+    }
+
+
+    .nama-item:last-child {
+      border-bottom: none;
+    }
+
+
+    /* ==========================================
+       HASIL
+    ========================================== */
 
     #hasil {
       text-align: center;
@@ -62,16 +122,32 @@
       line-height: 1.5;
     }
 
+
+    /* ==========================================
+       CAMERA
+    ========================================== */
+
     #camera {
       display: none;
       text-align: center;
     }
+
 
     video {
       width: 100%;
       border-radius: 12px;
       background: black;
     }
+
+
+    canvas {
+      display: none;
+    }
+
+
+    /* ==========================================
+       BUTTON
+    ========================================== */
 
     button {
       width: 100%;
@@ -83,15 +159,25 @@
       cursor: pointer;
     }
 
+
     .btn-datang {
       background: #198754;
       color: white;
     }
 
+
     .btn-pulang {
       background: #0d6efd;
       color: white;
     }
+
+
+    #bukaKamera {
+      display: none;
+      background: #111;
+      color: white;
+    }
+
 
     #ambilFoto {
       display: none;
@@ -99,11 +185,13 @@
       color: white;
     }
 
-    #scanLagi {
+
+    #reset {
       display: none;
       background: #ddd;
       color: #111;
     }
+
 
     #gantiMode {
       display: none;
@@ -111,964 +199,16 @@
       color: #111;
     }
 
+
+    /* ==========================================
+       STATUS
+    ========================================== */
+
     .success {
       color: green;
       font-weight: bold;
     }
 
-    .error {
-      color: red;
-      font-weight: bold;
-    }
 
-    .mode {
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-  </style>
-
-</head>
-
-
-<body>
-
-<div class="container">
-
-  <h1>📸 Absensi Acara</h1>
-
-
-  <!-- ============================== -->
-  <!-- PILIH MODE -->
-  <!-- ============================== -->
-
-  <div id="pilihMode">
-
-    <p>
-      Pilih jenis absensi:
-    </p>
-
-    <button
-      class="btn-datang"
-      onclick="pilihMode('datang')">
-
-      🟢 CHECK-IN / DATANG
-
-    </button>
-
-
-    <button
-      class="btn-pulang"
-      onclick="pilihMode('pulang')">
-
-      🔵 CHECK-OUT / PULANG
-
-    </button>
-
-  </div>
-
-
-  <!-- ============================== -->
-  <!-- HASIL -->
-  <!-- ============================== -->
-
-  <div id="hasil"></div>
-
-
-  <!-- ============================== -->
-  <!-- QR SCANNER -->
-  <!-- ============================== -->
-
-  <div id="reader"></div>
-
-
-  <!-- ============================== -->
-  <!-- KAMERA -->
-  <!-- ============================== -->
-
-  <div id="camera">
-
-    <video
-      id="video"
-      autoplay
-      playsinline>
-    </video>
-
-
-    <canvas
-      id="canvas"
-      style="display:none;">
-    </canvas>
-
-
-    <button
-      id="ambilFoto"
-      onclick="ambilFoto()">
-
-      📷 Ambil Foto
-
-    </button>
-
-  </div>
-
-
-  <!-- ============================== -->
-  <!-- TOMBOL SCAN LAGI -->
-  <!-- ============================== -->
-
-  <button
-    id="scanLagi"
-    onclick="resetScanner()">
-
-    🔄 Scan Peserta Berikutnya
-
-  </button>
-
-
-  <!-- ============================== -->
-  <!-- GANTI MODE -->
-  <!-- ============================== -->
-
-  <button
-    id="gantiMode"
-    onclick="kembaliKeMode()">
-
-    ↩️ Ganti Mode
-
-  </button>
-
-</div>
-
-
-
-<script>
-
-
-// ==================================================
-// URL GOOGLE APPS SCRIPT
-// ==================================================
-
-const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxbdqh0t_tE8JovVB9tYK7ya1RtaiQTrc5CI2zlSFj0GG3HJXyQR4ot1wRWibAIJTI0/exec";
-
-
-// ==================================================
-// VARIABLE
-// ==================================================
-
-let mode = null;
-
-let idPeserta = null;
-
-let namaPeserta = null;
-
-let scanner = null;
-
-let stream = null;
-
-let sudahScan = false;
-
-
-// ==================================================
-// PILIH MODE
-// ==================================================
-
-function pilihMode(selectedMode) {
-
-  mode = selectedMode;
-
-  sudahScan = false;
-
-  idPeserta = null;
-
-  namaPeserta = null;
-
-
-  document
-    .getElementById("pilihMode")
-    .style.display = "none";
-
-
-  document
-    .getElementById("reader")
-    .style.display = "block";
-
-
-  document
-    .getElementById("camera")
-    .style.display = "none";
-
-
-  document
-    .getElementById("scanLagi")
-    .style.display = "none";
-
-
-  document
-    .getElementById("gantiMode")
-    .style.display = "block";
-
-
-  if (mode === "datang") {
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-      "<div class='mode'>🟢 CHECK-IN</div><br>" +
-      "Silakan scan QR peserta.";
-
-  }
-
-  else {
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-      "<div class='mode'>🔵 CHECK-OUT</div><br>" +
-      "Silakan scan QR peserta.";
-
-  }
-
-
-  mulaiScanner();
-
-}
-
-
-// ==================================================
-// QR BERHASIL DIBACA
-// ==================================================
-
-async function berhasilScan(decodedText) {
-
-  if (sudahScan) return;
-
-  sudahScan = true;
-
-
-  idPeserta =
-    decodedText.trim();
-
-
-  // ================================
-  // STOP SCANNER
-  // ================================
-
-  if (scanner) {
-
-    try {
-
-      await scanner.stop();
-
-      await scanner.clear();
-
-    }
-
-    catch (error) {
-
-      console.log(error);
-
-    }
-
-  }
-
-
-  document
-    .getElementById("reader")
-    .style.display = "none";
-
-
-  document
-    .getElementById("hasil")
-    .innerHTML =
-    "⏳ Mencari data peserta...";
-
-
-  // ================================
-  // CARI PESERTA
-  // ================================
-
-  try {
-
-    const response =
-      await fetch(
-
-        APPS_SCRIPT_URL +
-        "?action=cariPeserta&id=" +
-        encodeURIComponent(idPeserta)
-
-      );
-
-
-    const result =
-      await response.json();
-
-
-    // ================================
-    // ID TIDAK DITEMUKAN
-    // ================================
-
-    if (!result.success) {
-
-      throw new Error(
-        result.message ||
-        "ID peserta tidak ditemukan."
-      );
-
-    }
-
-
-    namaPeserta =
-      result.nama;
-
-
-    // ================================
-    // CHECK-IN
-    // ================================
-
-    if (mode === "datang") {
-
-
-      // Sudah check-in
-      if (result.sudahDatang) {
-
-        document
-          .getElementById("hasil")
-          .innerHTML =
-
-          "<span class='error'>" +
-
-          "⚠️ PESERTA SUDAH CHECK-IN" +
-
-          "</span><br><br>" +
-
-          "Nama: <b>" +
-          namaPeserta +
-          "</b><br><br>" +
-
-          "Peserta ini sudah memiliki jam datang.";
-
-        document
-          .getElementById("scanLagi")
-          .style.display = "block";
-
-        return;
-
-      }
-
-
-    }
-
-
-    // ================================
-    // CHECK-OUT
-    // ================================
-
-    if (mode === "pulang") {
-
-
-      // Belum check-in
-      if (!result.sudahDatang) {
-
-        document
-          .getElementById("hasil")
-          .innerHTML =
-
-          "<span class='error'>" +
-
-          "⚠️ BELUM CHECK-IN" +
-
-          "</span><br><br>" +
-
-          "Nama: <b>" +
-          namaPeserta +
-          "</b><br><br>" +
-
-          "Peserta belum melakukan check-in.";
-
-        document
-          .getElementById("scanLagi")
-          .style.display = "block";
-
-        return;
-
-      }
-
-
-      // Sudah checkout
-      if (result.sudahPulang) {
-
-        document
-          .getElementById("hasil")
-          .innerHTML =
-
-          "<span class='error'>" +
-
-          "⚠️ PESERTA SUDAH CHECK-OUT" +
-
-          "</span><br><br>" +
-
-          "Nama: <b>" +
-          namaPeserta +
-          "</b><br><br>" +
-
-          "Peserta ini sudah memiliki jam pulang.";
-
-        document
-          .getElementById("scanLagi")
-          .style.display = "block";
-
-        return;
-
-      }
-
-    }
-
-
-    // ================================
-    // PESERTA VALID
-    // ================================
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      (mode === "datang"
-        ? "<div class='mode'>🟢 CHECK-IN</div>"
-        : "<div class='mode'>🔵 CHECK-OUT</div>"
-      ) +
-
-      "<br>" +
-
-      "Nama:<br>" +
-
-      "<b>" +
-      namaPeserta +
-      "</b><br><br>" +
-
-      "Silakan ambil foto.";
-
-
-    // ================================
-    // BUKA KAMERA BELAKANG
-    // ================================
-
-    bukaKamera();
-
-  }
-
-
-  catch (error) {
-
-    console.error(error);
-
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      "<span class='error'>" +
-
-      "❌ Gagal mencari peserta.<br><br>" +
-
-      error.message +
-
-      "</span>";
-
-
-    document
-      .getElementById("scanLagi")
-      .style.display = "block";
-
-  }
-
-}
-
-
-// ==================================================
-// BUKA KAMERA BELAKANG
-// ==================================================
-
-async function bukaKamera() {
-
-  const camera =
-    document.getElementById("camera");
-
-  const video =
-    document.getElementById("video");
-
-  const tombol =
-    document.getElementById("ambilFoto");
-
-
-  camera.style.display = "block";
-
-  tombol.style.display = "block";
-
-
-  try {
-
-    stream =
-      await navigator.mediaDevices.getUserMedia({
-
-        video: {
-
-          facingMode: {
-            ideal: "environment"
-          },
-
-          width: {
-            ideal: 1280
-          },
-
-          height: {
-            ideal: 720
-          }
-
-        },
-
-        audio: false
-
-      });
-
-
-    video.srcObject = stream;
-
-    await video.play();
-
-  }
-
-
-  catch (error) {
-
-    console.error(error);
-
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      "<span class='error'>" +
-
-      "❌ Kamera belakang tidak dapat dibuka.<br><br>" +
-
-      error.name +
-
-      "</span>";
-
-
-    tombol.style.display = "none";
-
-
-    document
-      .getElementById("scanLagi")
-      .style.display = "block";
-
-  }
-
-}
-
-
-// ==================================================
-// AMBIL FOTO
-// ==================================================
-
-async function ambilFoto() {
-
-  const video =
-    document.getElementById("video");
-
-  const canvas =
-    document.getElementById("canvas");
-
-
-  if (!video.videoWidth) {
-
-    alert("Kamera belum siap.");
-
-    return;
-
-  }
-
-
-  canvas.width =
-    video.videoWidth;
-
-  canvas.height =
-    video.videoHeight;
-
-
-  const context =
-    canvas.getContext("2d");
-
-
-  context.drawImage(
-
-    video,
-
-    0,
-
-    0,
-
-    canvas.width,
-
-    canvas.height
-
-  );
-
-
-  const fotoBase64 =
-    canvas.toDataURL(
-
-      "image/jpeg",
-
-      0.8
-
-    );
-
-
-  // ================================
-  // MATIKAN KAMERA
-  // ================================
-
-  if (stream) {
-
-    stream
-      .getTracks()
-      .forEach(
-        track => track.stop()
-      );
-
-    stream = null;
-
-  }
-
-
-  document
-    .getElementById("ambilFoto")
-    .style.display = "none";
-
-
-  document
-    .getElementById("hasil")
-    .innerHTML =
-    "⏳ Menyimpan foto...";
-
-
-  // ==================================================
-  // TENTUKAN ACTION
-  // ==================================================
-
-  const action =
-    mode === "datang"
-      ? "simpanFotoDatang"
-      : "simpanFotoPulang";
-
-
-  // ==================================================
-  // KIRIM FOTO
-  // ==================================================
-
-  try {
-
-    const response =
-      await fetch(
-
-        APPS_SCRIPT_URL,
-
-        {
-
-          method: "POST",
-
-          headers: {
-
-            "Content-Type":
-              "application/x-www-form-urlencoded"
-
-          },
-
-          body:
-
-            "action=" +
-            encodeURIComponent(action) +
-
-            "&id=" +
-            encodeURIComponent(idPeserta) +
-
-            "&foto=" +
-            encodeURIComponent(fotoBase64)
-
-        }
-
-      );
-
-
-    const result =
-      await response.json();
-
-
-    if (!result.success) {
-
-      throw new Error(
-
-        result.message ||
-        "Gagal menyimpan foto."
-
-      );
-
-    }
-
-
-    // ==================================================
-    // BERHASIL
-    // ==================================================
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      "<span class='success'>" +
-
-      (mode === "datang"
-        ? "✅ CHECK-IN BERHASIL!"
-        : "✅ CHECK-OUT BERHASIL!"
-      ) +
-
-      "</span><br><br>" +
-
-      "Nama: <b>" +
-      result.nama +
-      "</b><br><br>" +
-
-      "Foto berhasil disimpan.";
-
-
-    document
-      .getElementById("scanLagi")
-      .style.display = "block";
-
-  }
-
-
-  catch (error) {
-
-    console.error(error);
-
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      "<span class='error'>" +
-
-      "❌ Gagal menyimpan foto.<br><br>" +
-
-      error.message +
-
-      "</span>";
-
-
-    document
-      .getElementById("scanLagi")
-      .style.display = "block";
-
-  }
-
-}
-
-
-// ==================================================
-// SCAN PESERTA BERIKUTNYA
-// ==================================================
-
-function resetScanner() {
-
-  idPeserta = null;
-
-  namaPeserta = null;
-
-  sudahScan = false;
-
-
-  document
-    .getElementById("camera")
-    .style.display = "none";
-
-
-  document
-    .getElementById("ambilFoto")
-    .style.display = "none";
-
-
-  document
-    .getElementById("scanLagi")
-    .style.display = "none";
-
-
-  document
-    .getElementById("reader")
-    .style.display = "block";
-
-
-  document
-    .getElementById("hasil")
-    .innerHTML =
-
-    (mode === "datang"
-      ? "<div class='mode'>🟢 CHECK-IN</div>"
-      : "<div class='mode'>🔵 CHECK-OUT</div>"
-    ) +
-
-    "<br>Silakan scan QR peserta.";
-
-
-  mulaiScanner();
-
-}
-
-
-// ==================================================
-// GANTI MODE
-// ==================================================
-
-function kembaliKeMode() {
-
-  // Matikan kamera kalau masih aktif
-  if (stream) {
-
-    stream
-      .getTracks()
-      .forEach(
-        track => track.stop()
-      );
-
-    stream = null;
-
-  }
-
-
-  // Matikan scanner kalau masih aktif
-  if (scanner) {
-
-    scanner.stop()
-      .then(() => {
-
-        try {
-          scanner.clear();
-        } catch (e) {}
-
-      })
-      .catch(() => {});
-
-  }
-
-
-  scanner = null;
-
-  sudahScan = false;
-
-  idPeserta = null;
-
-  namaPeserta = null;
-
-  mode = null;
-
-
-  document
-    .getElementById("pilihMode")
-    .style.display = "block";
-
-
-  document
-    .getElementById("reader")
-    .style.display = "none";
-
-
-  document
-    .getElementById("camera")
-    .style.display = "none";
-
-
-  document
-    .getElementById("ambilFoto")
-    .style.display = "none";
-
-
-  document
-    .getElementById("scanLagi")
-    .style.display = "none";
-
-
-  document
-    .getElementById("gantiMode")
-    .style.display = "none";
-
-
-  document
-    .getElementById("hasil")
-    .innerHTML = "";
-
-}
-
-
-// ==================================================
-// MULAI QR SCANNER
-// ==================================================
-
-function mulaiScanner() {
-
-  scanner =
-    new Html5Qrcode("reader");
-
-
-  scanner.start(
-
-    {
-      facingMode: "environment"
-    },
-
-    {
-
-      fps: 10,
-
-      qrbox: {
-        width: 250,
-        height: 250
-      }
-
-    },
-
-    berhasilScan,
-
-    function(errorMessage) {
-      // Abaikan error scanner
-    }
-
-  )
-
-  .catch(function(error) {
-
-    console.error(error);
-
-
-    document
-      .getElementById("hasil")
-      .innerHTML =
-
-      "<span class='error'>" +
-
-      "❌ Kamera QR tidak dapat dibuka.<br><br>" +
-
-      error +
-
-      "</span>";
-
-  });
-
-}
-
-</script>
-
-</body>
-
-</html>
+    .error
+```
